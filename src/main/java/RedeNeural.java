@@ -1,8 +1,7 @@
-import java.io.IOException;
-
 public class RedeNeural {
-    public static void main(String[] args) throws IOException {
-        ProcessamentoDeArquivo.lerDados("src/main/resources/optdigits.csv");
-        int x = 1;
-    }
+    final int MIN_PESO = -1;
+    final int MAX_PESO = 1;
+
+//  A rede solicitada no enunciado possui apenas uma camada oculta.
+
 }
