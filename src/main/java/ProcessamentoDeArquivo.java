@@ -10,13 +10,11 @@ public class ProcessamentoDeArquivo {
 
     static void lerDados(String nome) throws IOException {
 
-        String[] entradaString;
-
         String row;
         BufferedReader csvReader = new BufferedReader(new FileReader(nome));
 
         while ((row = csvReader.readLine()) != null) {
-            Integer[] entradaInteger = new Integer[16];
+            Integer[] entradaInteger = new Integer[65];
             String[] data = row.split(",");
             for (int i = 0; i < data.length; i++) {
                 entradaInteger[i] = Integer.parseInt(data[i]);
