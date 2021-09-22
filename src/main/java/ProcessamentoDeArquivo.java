@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class LerDados {
+public class ProcessamentoDeArquivo {
 
     static List<Integer[]> vetores = new ArrayList<>();
 
@@ -26,5 +26,6 @@ public class LerDados {
         csvReader.close();
         System.out.println("Tamanho: "+vetores.size());
     }
+
 
 }
