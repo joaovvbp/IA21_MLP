@@ -6,24 +6,38 @@ import java.util.List;
 
 public class ProcessamentoDeArquivo {
 
-    static List<Integer[]> vetores = new ArrayList<>();
+    ProcessamentoDeArquivo(){ } //Construtor padrão
 
-    static void lerDados(String nome) throws IOException {
+    static List<Exemplo> entradas = new ArrayList<>(); //Vetor com os exemplos de entrada
 
-        String row;
-        BufferedReader csvReader = new BufferedReader(new FileReader(nome));
-
-        while ((row = csvReader.readLine()) != null) {
-            Integer[] entradaInteger = new Integer[65];
-            String[] data = row.split(",");
-            for (int i = 0; i < data.length; i++) {
-                entradaInteger[i] = Integer.parseInt(data[i]);
-            }
-            vetores.add(entradaInteger);
-        }
-        csvReader.close();
-        System.out.println("Tamanho: "+vetores.size());
+    static void processarDados(String local) { //Função principal que deve ser chamada para ler dados e normalizar
+        lerDados(local);
+        normalizarDados();
     }
 
+    static void lerDados (String local) { //Lê os dados do arquivo
+        try (BufferedReader csvReader = new BufferedReader(new FileReader(local))){ //try-with-resources
+            String row;
+            while ((row = csvReader.readLine()) != null) {
+                String[] data = row.split(",");
+                Exemplo ex = new Exemplo();
+                for (int i = 0; i < data.length; i++) {
+                    if (i < 64)
+                        ex.vetorEntradas[i] = Double.parseDouble(data[i]); //Converte String do arquivo para Double e coloca no vetor entrada de Exemplo
+                    else ex.rotulo[(int) Double.parseDouble(data[i])] = 1; //Atribui o rótulo (que é o último valor)
+                }
+                entradas.add(ex);
+            }
+        } catch (IOException e) { System.out.println("Falha na leitura do arquivo em "+local); }
+    }
 
+    static void normalizarDados() { //Normaliza os dados com a divisão de cada elemento pela soma de todos elementos
+        for (Exemplo ex: entradas) {
+            int somaEntrada = 0;
+            for (int i = 0; i < ex.vetorEntradas.length; i++) somaEntrada += ex.vetorEntradas[i]; //Calcula a soma de todos elementos
+            for (int i = 0; i < ex.vetorEntradas.length; i++)
+                if ((somaEntrada != 0))  //Se a soma dos elementos for igual a 0 os elementos já estão normalizados
+                    ex.vetorEntradas[i] = ex.vetorEntradas[i] / somaEntrada;
+        }
+    }
 }
