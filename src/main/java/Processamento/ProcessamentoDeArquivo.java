@@ -1,3 +1,5 @@
+package Processamento;
+
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
@@ -8,9 +10,9 @@ public class ProcessamentoDeArquivo {
 
     ProcessamentoDeArquivo(){ } //Construtor padrão
 
-    static List<Exemplo> entradas = new ArrayList<>(); //Vetor com os exemplos de entrada
+    public static List<Exemplo> entradas = new ArrayList<>(); //Vetor com os exemplos de entrada
 
-    static void processarDados(String local) { //Função principal que deve ser chamada para ler dados e normalizar
+    public static void processarDados(String local) { //Função principal que deve ser chamada para ler dados e normalizar
         lerDados(local);
         normalizarDados();
     }
@@ -23,7 +25,7 @@ public class ProcessamentoDeArquivo {
                 Exemplo ex = new Exemplo();
                 for (int i = 0; i < data.length; i++) {
                     if (i < 64)
-                        ex.vetorEntradas[i] = Double.parseDouble(data[i]); //Converte String do arquivo para Double e coloca no vetor entrada de Exemplo
+                        ex.vetorEntradas[i] = Double.parseDouble(data[i]); //Converte String do arquivo para Double e coloca no vetor entrada de Processamento.Exemplo
                     else ex.rotulo[(int) Double.parseDouble(data[i])] = 1; //Atribui o rótulo (que é o último valor)
                 }
                 entradas.add(ex);
