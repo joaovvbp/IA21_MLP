@@ -18,11 +18,11 @@ public class KFoldCrossValidation {
     }
 
     public static void dividir(){
-        for (Exemplo vetor : ProcessamentoDeArquivo.entradas) {
+        for (int i = 0; i < 10; i++) {
             ArrayList<Exemplo> fold = new ArrayList<>();
-            for (int i = 0; i < ProcessamentoDeArquivo.entradas.size()/10; i++)
-                fold.add(ProcessamentoDeArquivo.entradas.get(i));
-            fold.clear();
+            for (int j = 0; j < ProcessamentoDeArquivo.entradas.size()/10; j++)
+                fold.add(ProcessamentoDeArquivo.entradas.get(j));
+            folds.add(fold);
         }
     }
 
