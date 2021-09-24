@@ -4,7 +4,8 @@ import java.util.Random;
 
 public class Neuronio {
     Random random = new Random();
-    protected double[] pesos;
+    public double valor;
+    public double[] pesos;
 
     public Neuronio(int pesosRecebidos) {
         pesos = new double[pesosRecebidos];
@@ -25,6 +26,4 @@ public class Neuronio {
             pesos[i] = pesos[i]/somapesos;
         }
     }
-
-
 }
