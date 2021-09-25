@@ -4,7 +4,7 @@ import java.util.Random;
 
 public class Neuronio {
     Random random = new Random();
-    public double valor;
+    public double[] valor = new double[1];
     public double[] pesos;
 
     public Neuronio(int pesosRecebidos) {

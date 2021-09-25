@@ -1,21 +1,6 @@
 package MLP;
 
-public class MLP {
-    final int MIN_PESO = -1;
-    final int MAX_PESO = 1;
-    final int TAM_ENTRADA = 64;
-
-    public Camada camadaOculta;
-    public Camada camadaSaida;
-    public double taxaDeAprendizado;
-
-    public MLP(int neuroniosCamadaOculta, double taxaDeAprendizado) {
-        this.taxaDeAprendizado = taxaDeAprendizado;
-        camadaOculta = new Camada(neuroniosCamadaOculta, TAM_ENTRADA);
-        camadaSaida = new Camada(10, camadaOculta.tamanho);
-    }
-
-    // INSTRUCOES PARA A ETAPA DE PROPAGACAO
+// INSTRUCOES PARA A ETAPA DE PROPAGACAO
 //    ◼ Passo 1.1) Dado o exemplo E como entrada da
 //    rede, determine:
 //            – as saídas dos neurônios ocultos (que serão os
@@ -40,10 +25,53 @@ public class MLP {
 //    também devem ser
 //    registrados.
 
-    public double forwardPropagation(){
+import java.util.Arrays;
+
+import static java.lang.Math.*;
+
+public class MLP {
+    final int MIN_PESO = -1;
+    final int MAX_PESO = 1;
+    final int TAM_ENTRADA = 64;
+
+    public Camada camadaOculta;
+    public Camada camadaSaida;
+    public double taxaDeAprendizado;
+
+    //Sao inicializadas as camadas, chamando os construtores dos neuronios, onde sao inicializados os pesos
+    public MLP(int neuroniosCamadaOculta, double taxaDeAprendizado) {
+        this.taxaDeAprendizado = taxaDeAprendizado;
+        camadaOculta = new Camada(neuroniosCamadaOculta, TAM_ENTRADA);
+        camadaSaida = new Camada(10, camadaOculta.tamanho);
+    }
+
+    //Calcula a soma ponderada para cada neuronio, armazena o resultado dentro do neuronio no campo valor (Deve funcionar tanto pra camada oculta quanto de saida)
+    public void somaPonderada(double[] entrada, Neuronio neuronio) {
+        neuronio.valor[0] = 0;
+        neuronio.normalizaPesos();
+        for (int i = 0; i < entrada.length; i++) {
+            neuronio.valor[0] += entrada[i] * neuronio.pesos[i];
+            System.out.println("R("+neuronio.valor[0]+")IN("+entrada[i]+")"+"* PESO("+neuronio.pesos[i]+") ");
+        }
+    }
+
+    //Calcula a saida da camada oculta e de saida
+    public double sigmoide(double valorDoNeuronio) {
+        double saida;
+        saida = 1/(1+exp(valorDoNeuronio));
+        return saida;
+    }
+
+    /* @param camada especifica a camada em que sera calculado o erro, 0 para oculta e 1 para saida*/
+
+    public double forwardPropagation(double[] entrada, MLP rede) {
         double output = 0;
-        //Passar os valores pela rede toda, ate receber um output
-            //
+        for (int i = 0; i < rede.camadaOculta.tamanho; i++) {
+            somaPonderada(entrada, camadaOculta.neuronios[i]);
+        }
+        for (int i = 0; i < camadaSaida.tamanho; i++) {
+            somaPonderada(rede.camadaOculta.neuronios[i].valor,camadaSaida.neuronios[i]);
+        }
         return output;
     }
 
