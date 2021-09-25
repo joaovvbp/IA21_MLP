@@ -7,12 +7,12 @@ package MLP;
 //            sinais de entrada para as unidades de saída).
 //            – as saídas dos neurônios de saída (que indicam a
 //            estimativa de classe para o exemplo E).
-//    Passo 1.2) Registre os valores desejado e obtido para o exemplo E.
+//    Passo 1.2) Registre os somaponderadaes desejado e obtido para o exemplo E.
 //            – considere ti
-//            (E) o valor desejado para a unidade de saída i, para o
+//            (E) o somaponderada desejado para a unidade de saída i, para o
 //    exemplo E.
 //            – considere oi
-//            (E) o valor obtido para a unidade de saída i, para o
+//            (E) o somaponderada obtido para a unidade de saída i, para o
 //    exemplo E.
 //            ◼ Para tarefas de classificação, por exemplo:
 //            – Cada ti
@@ -20,8 +20,8 @@ package MLP;
 //            (E), que será igual
 //    a 1.
 //            – Mas, oi
-//            (E) será, na verdade, um valor real.
-//            ◼ Os valores de saída dos neurônios ocultos hi
+//            (E) será, na verdade, um somaponderada real.
+//            ◼ Os somaponderadaes de saída dos neurônios ocultos hi
 //    também devem ser
 //    registrados.
 
@@ -45,20 +45,29 @@ public class MLP {
         camadaSaida = new Camada(10, camadaOculta.tamanho);
     }
 
-    //Calcula a soma ponderada para cada neuronio, armazena o resultado dentro do neuronio no campo valor (Deve funcionar tanto pra camada oculta quanto de saida)
+    //Calcula a soma ponderada para cada neuronio, armazena o resultado dentro do neuronio no campo somaponderada (Deve funcionar tanto pra camada oculta quanto de saida)
+    //Esse codigo funciona apenas para a camada oculta, no momento
+
+    //Nao consegue iterar com os resultados de saida da camada oculta, pois eles nao sao formatados da mesma forma que os da entrada.
+
+    //Provavelmente armazenar os valores de entrada e saida de cada neuronio na classe camada seja mais eficiente.
+    //Uma lista, ou vetor, contendo o neuronio, entrada, e saida
+
+    //A outra solucao seria ao fornecer a entrada, executar um loop?
     public void somaPonderada(double[] entrada, Neuronio neuronio) {
-        neuronio.valor[0] = 0;
+        neuronio.somaponderada = 0;
         neuronio.normalizaPesos();
         for (int i = 0; i < entrada.length; i++) {
-            neuronio.valor[0] += entrada[i] * neuronio.pesos[i];
-            System.out.println("R("+neuronio.valor[0]+")IN("+entrada[i]+")"+"* PESO("+neuronio.pesos[i]+") ");
+            neuronio.somaponderada += entrada[i] * neuronio.pesos[i];
+            System.out.println("R("+neuronio.somaponderada+")IN("+entrada[i]+")"+"* PESO("+neuronio.pesos[i]+") ");
         }
+        neuronio.saida = sigmoide(neuronio.somaponderada);
     }
-
+    
     //Calcula a saida da camada oculta e de saida
-    public double sigmoide(double valorDoNeuronio) {
+    public double sigmoide(double somaponderadaDoNeuronio) {
         double saida;
-        saida = 1/(1+exp(valorDoNeuronio));
+        saida = 1/(1+exp(somaponderadaDoNeuronio));
         return saida;
     }
 
@@ -70,7 +79,7 @@ public class MLP {
             somaPonderada(entrada, camadaOculta.neuronios[i]);
         }
         for (int i = 0; i < camadaSaida.tamanho; i++) {
-            somaPonderada(rede.camadaOculta.neuronios[i].valor,camadaSaida.neuronios[i]);
+            //somaPonderada(rede.camadaOculta.neuronios[i].somaponderada,camadaSaida.neuronios[i]);
         }
         return output;
     }
