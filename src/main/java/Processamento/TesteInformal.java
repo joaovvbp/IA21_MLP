@@ -1,7 +1,5 @@
 package Processamento;
 
-import Processamento.Holdout;
-import Processamento.ProcessamentoDeArquivo;
 
 public class TesteInformal {
 
