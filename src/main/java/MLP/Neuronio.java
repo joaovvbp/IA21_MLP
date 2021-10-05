@@ -43,7 +43,7 @@ public class Neuronio {
     public void somaPonderadaSaida(Camada camadaoculta) {
         somaponderada = 0;
         normalizaPesos();
-        for (int i = 0; i < camadaoculta.tamanho; i++) {
+        for (int i = 0; i < camadaoculta.tamanhoCamada; i++) {
             somaponderada += camadaoculta.neuronios[i].saida * pesos[i];
             //System.out.println("R(" + somaponderada + ")IN(" + camadaoculta.neuronios[i].saida + ")" + "* PESO(" + pesos[i] + ") ");
         }

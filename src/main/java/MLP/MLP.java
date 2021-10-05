@@ -37,13 +37,18 @@ public class MLP {
         return (double) ((1 - Neuronio.sigmoide(entrada)) * Neuronio.sigmoide(entrada));
     }
 
-    static double calculaErroCamadaSaida(int obtido, int esperado) {
+    static double calculaErroNeuronioSaida(int obtido, int esperado) {
         return obtido * (1 - obtido) * (esperado - obtido);
+    }
+
+    static double calculaErroQuadrado(){
+        return 0.0;
     }
 
     //Para cada neuronio h, da camada oculta faça:
     // ErroNeuronioOculto = SaidaNeuronioOculto ( 1 - SaidaNeuronioOculto) + somatoria dos (PesoOcultaSaida * ErroSaida)
     static double calculaErroNeuronioOculto(int obtido, int esperado) {
+        //Somatoria dos erros de saida
 
         double ErroNeuronioOculto =  obtido * (1 - obtido);
         return 0;
