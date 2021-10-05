@@ -37,20 +37,28 @@ public class MLP {
         return (double) ((1 - Neuronio.sigmoide(entrada)) * Neuronio.sigmoide(entrada));
     }
 
-    static double calculaErroNeuronioSaida(int obtido, int esperado) {
-        return obtido * (1 - obtido) * (esperado - obtido);
+    static double calculaErroNeuronioSaida(int saida, int esperado) {
+        return saida * (1 - saida) * (esperado - saida);
     }
 
-    static double calculaErroQuadrado(){
+    static double calculaTreshold(){
         return 0.0;
     }
 
     //Para cada neuronio h, da camada oculta faça:
     // ErroNeuronioOculto = SaidaNeuronioOculto ( 1 - SaidaNeuronioOculto) + somatoria dos (PesoOcultaSaida * ErroSaida)
-    static double calculaErroNeuronioOculto(int obtido, int esperado) {
-        //Somatoria dos erros de saida
 
-        double ErroNeuronioOculto =  obtido * (1 - obtido);
-        return 0;
+    //Como conectar os neuronios da camada de saida com os neuronios da camada oculta??
+    //Nao existe conexao entre os neuronios, apenas o vetor de pesos, que nao liga de fato um neuronio ao outro
+
+    //Tentei resolver isso usando um valor ID no neuronio, correspondente a sua posicao no vetor de pesos dos neuronios que recebem sua saida.
+    //Colocar em um loop pra testar
+    static double calculaErroNeuronioOculto(int idNeuronio, Camada camadaSaida, int saida) {
+        //Somatoria dos erros de saida
+        double somatoriaSaida = 0.0;
+        for (int i = 0; i < camadaSaida.neuronios.length; i++) {
+            somatoriaSaida += (camadaSaida.neuronios[i].saida * camadaSaida.neuronios[i].pesos[idNeuronio]);
+        }
+        return saida * (1 - saida) + somatoriaSaida;
     }
 }

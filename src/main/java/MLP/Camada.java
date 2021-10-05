@@ -11,7 +11,8 @@ public class Camada {
         //valores = new double[neuronios.length];
 
         for(int j = 0; j < this.tamanhoCamada; j++) {
-            neuronios[j] = new Neuronio(tamanhoCamadaAnterior);
+            neuronios[j] = new Neuronio(tamanhoCamadaAnterior, j);
+            //System.out.println("ID: "+neuronios[j].ID);
             neuronios[j].inicializaPesos();
         }
     }

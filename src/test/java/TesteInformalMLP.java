@@ -7,10 +7,10 @@ public class TesteInformalMLP {
 
     public static void somaPonderadaTest(double[] entrada) {
         MLP rede1 = new MLP(3, 0.1);
-        for (int i = 0; i < rede1.camadaOculta.tamanho; i++) {
+        for (int i = 0; i < rede1.camadaOculta.tamanhoCamada; i++) {
             rede1.camadaOculta.neuronios[i].somaPonderadaOculta(entrada);
         }
-        for (int i = 0; i < rede1.camadaSaida.tamanho; i++) {
+        for (int i = 0; i < rede1.camadaSaida.tamanhoCamada; i++) {
             rede1.camadaSaida.neuronios[i].somaPonderadaSaida(rede1.camadaOculta);
         }
     }
