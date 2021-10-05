@@ -1,0 +1,2 @@
+Pode ser necessario uma refatoracao da estrutura do projeto, pra organizar corretamente as classes e metodos
+Por exemplo, na funcao Neuronio pode nao ser ideal ter as manipulacoes dos pesos.
