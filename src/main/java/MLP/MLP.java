@@ -25,26 +25,34 @@ public class MLP {
         }
     }
 
-    static void atualizaPesosCamadaNormal() {
+    public static void atualizaPesosCamadaNormal() {
 
     }
 
-    static void atualizaPesosCamadaOculta() {
+    public static void atualizaPesosCamadaOculta() {
 
     }
 
-    static double derivadaSigmoide(int entrada) {
+    public static double derivadaSigmoide(int entrada) {
         return (double) ((1 - Neuronio.sigmoide(entrada)) * Neuronio.sigmoide(entrada));
     }
 
-    static double calculaErroNeuronioSaida(int saida, int esperado) {
+    public static double calculaErroNeuronioSaida(int saida, int esperado) {
         return saida * (1 - saida) * (esperado - saida);
     }
 
-    static double calculaTreshold(){
+    public static double calculaErroQuadratico(){
         return 0.0;
     }
 
+    public static double calculaErroNeuronioOculto(int idNeuronio, Camada camadaSaida, int saida) {
+        //Somatoria dos erros de saida
+        double somatoriaSaida = 0.0;
+        for (int i = 0; i < camadaSaida.neuronios.length; i++) {
+            somatoriaSaida += (camadaSaida.neuronios[i].saida * camadaSaida.neuronios[i].pesos[idNeuronio]);
+        }
+        return saida * (1 - saida) + somatoriaSaida;
+    }
     //Para cada neuronio h, da camada oculta faça:
     // ErroNeuronioOculto = SaidaNeuronioOculto ( 1 - SaidaNeuronioOculto) + somatoria dos (PesoOcultaSaida * ErroSaida)
 
@@ -53,12 +61,5 @@ public class MLP {
 
     //Tentei resolver isso usando um valor ID no neuronio, correspondente a sua posicao no vetor de pesos dos neuronios que recebem sua saida.
     //Colocar em um loop pra testar
-    static double calculaErroNeuronioOculto(int idNeuronio, Camada camadaSaida, int saida) {
-        //Somatoria dos erros de saida
-        double somatoriaSaida = 0.0;
-        for (int i = 0; i < camadaSaida.neuronios.length; i++) {
-            somatoriaSaida += (camadaSaida.neuronios[i].saida * camadaSaida.neuronios[i].pesos[idNeuronio]);
-        }
-        return saida * (1 - saida) + somatoriaSaida;
-    }
+
 }
