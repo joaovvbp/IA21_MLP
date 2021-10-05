@@ -13,15 +13,39 @@ public class MLP {
     public MLP(int neuroniosCamadaOculta, double taxaDeAprendizado) {
         this.taxaDeAprendizado = taxaDeAprendizado;
         camadaOculta = new Camada(neuroniosCamadaOculta, TAM_ENTRADA);
-        camadaSaida = new Camada(10, camadaOculta.tamanho);
+        camadaSaida = new Camada(10, camadaOculta.tamanhoCamada);
     }
 
     public void forwardPropagation(double[] entrada, MLP rede) {
-        for (int i = 0; i < rede.camadaOculta.tamanho; i++) {
+        for (int i = 0; i < rede.camadaOculta.tamanhoCamada; i++) {
             rede.camadaOculta.neuronios[i].somaPonderadaOculta(entrada);
         }
-        for (int i = 0; i < rede.camadaSaida.tamanho; i++) {
+        for (int i = 0; i < rede.camadaSaida.tamanhoCamada; i++) {
             rede.camadaSaida.neuronios[i].somaPonderadaSaida(rede.camadaOculta);
         }
+    }
+
+    static void atualizaPesosCamadaNormal() {
+
+    }
+
+    static void atualizaPesosCamadaOculta() {
+
+    }
+
+    static double derivadaSigmoide(int entrada) {
+        return (double) ((1 - Neuronio.sigmoide(entrada)) * Neuronio.sigmoide(entrada));
+    }
+
+    static double calculaErroCamadaSaida(int obtido, int esperado) {
+        return obtido * (1 - obtido) * (esperado - obtido);
+    }
+
+    //Para cada neuronio h, da camada oculta faça:
+    // ErroNeuronioOculto = SaidaNeuronioOculto ( 1 - SaidaNeuronioOculto) + somatoria dos (PesoOcultaSaida * ErroSaida)
+    static double calculaErroNeuronioOculto(int obtido, int esperado) {
+
+        double ErroNeuronioOculto =  obtido * (1 - obtido);
+        return 0;
     }
 }

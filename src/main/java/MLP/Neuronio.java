@@ -35,7 +35,7 @@ public class Neuronio {
         normalizaPesos();
         for (int i = 0; i < entrada.length; i++) {
             somaponderada += entrada[i] * pesos[i];
-            System.out.println("R(" + somaponderada + ")IN(" + entrada[i] + ")" + "* PESO(" + pesos[i] + ") ");
+            //System.out.println("R(" + somaponderada + ")IN(" + entrada[i] + ")" + "* PESO(" + pesos[i] + ") ");
         }
         saida = sigmoide(somaponderada);
     }
@@ -45,13 +45,13 @@ public class Neuronio {
         normalizaPesos();
         for (int i = 0; i < camadaoculta.tamanho; i++) {
             somaponderada += camadaoculta.neuronios[i].saida * pesos[i];
-            System.out.println("R(" + somaponderada + ")IN(" + camadaoculta.neuronios[i].saida + ")" + "* PESO(" + pesos[i] + ") ");
+            //System.out.println("R(" + somaponderada + ")IN(" + camadaoculta.neuronios[i].saida + ")" + "* PESO(" + pesos[i] + ") ");
         }
         saida = sigmoide(somaponderada);
         System.out.println("Saida: " + saida);
     }
 
-    public double sigmoide(double somaponderadaDoNeuronio) {
+    public static double sigmoide(double somaponderadaDoNeuronio) {
         return 1 / (1 + exp(somaponderadaDoNeuronio));
     }
 }
