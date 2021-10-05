@@ -6,11 +6,13 @@ import static java.lang.Math.exp;
 
 public class Neuronio {
     Random random = new Random();
+    public int ID = -1;
     public double saida;
     public double somaponderada;
     public double[] pesos;
 
-    public Neuronio(int pesosRecebidos) {
+    public Neuronio(int pesosRecebidos, int ID) {
+        this.ID = ID;
         pesos = new double[pesosRecebidos];
     }
 
