@@ -25,27 +25,43 @@ public class MLP {
         }
     }
 
-    public static void atualizaPesosCamadaNormal() {
+    public int[] converteSaida(Camada camadaSaida){
+        int maiorValor = -1;
+        int classe = -1;
+
+        for (int i = 0; i < camadaSaida.tamanhoCamada; i++) {
+            if (camadaSaida.neuronios[i].saida > maiorValor){
+                maiorValor = camadaSaida.neuronios[i].ID;
+            }
+        }
+        //Setando o array
+        int[] saida = new int[10];
+        saida[classe] = 1;
+
+        return saida;
+    }
+
+    public void atualizaPesosCamadaNormal() {
 
     }
 
-    public static void atualizaPesosCamadaOculta() {
+    public void atualizaPesosCamadaOculta() {
 
     }
 
-    public static double derivadaSigmoide(int entrada) {
+    public double derivadaSigmoide(int entrada) {
         return (double) ((1 - Neuronio.sigmoide(entrada)) * Neuronio.sigmoide(entrada));
     }
 
-    public static double calculaErroNeuronioSaida(int saida, int esperado) {
+    public double calculaErroNeuronioSaida(int saida, int esperado) {
         return saida * (1 - saida) * (esperado - saida);
     }
 
-    public static double calculaErroQuadratico(){
+    public double calculaErroQuadratico(){
         return 0.0;
     }
 
-    public static double calculaErroNeuronioOculto(int idNeuronio, Camada camadaSaida, int saida) {
+    public double calculaErroNeuronioOculto(int idNeuronio, Camada camadaSaida, int saida) {
         //Somatoria dos erros de saida
         double somatoriaSaida = 0.0;
         for (int i = 0; i < camadaSaida.neuronios.length; i++) {
