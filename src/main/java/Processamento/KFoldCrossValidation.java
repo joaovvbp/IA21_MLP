@@ -20,8 +20,9 @@ public class KFoldCrossValidation {
     public static void dividir(){
         for (int i = 0; i < 10; i++) {
             ArrayList<Exemplo> fold = new ArrayList<>();
-            for (int j = 0; j < ProcessamentoDeArquivo.entradas.size()/10; j++)
+            for (int j = 0; j < ProcessamentoDeArquivo.entradas.size()/10; j++) {
                 fold.add(ProcessamentoDeArquivo.entradas.get(j));
+            }
             folds.add(fold);
         }
     }
