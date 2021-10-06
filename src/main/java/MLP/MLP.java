@@ -41,7 +41,16 @@ public class MLP {
         return saida * (1 - saida) * (esperado - saida);
     }
 
-    public static double calculaErroQuadratico(){
+    public static double calculaErroQuadratico(String conjunto) {
+        if(conjunto.equals("Treinamento")){
+
+        }
+        else if (conjunto.equals("Validacao")) {
+
+        }
+        else {
+
+        }
         return 0.0;
     }
 
