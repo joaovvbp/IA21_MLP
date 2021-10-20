@@ -1,5 +1,7 @@
 package MLP;
 
+import java.sql.SQLOutput;
+
 public class MLP {
     final int MIN_PESO = -1;
     final int MAX_PESO = 1;
@@ -26,10 +28,12 @@ public class MLP {
     }
 
     public int[] converteSaida(Camada camadaSaida) {
+        double maior_saida = -1.0;
         int classe = -1;
 
         for (int i = 0; i < camadaSaida.tamanhoCamada; i++) {
-            if (camadaSaida.neuronios[i].saida > classe) {
+            if (camadaSaida.neuronios[i].saida > maior_saida) {
+                maior_saida = camadaSaida.neuronios[i].saida;
                 classe = camadaSaida.neuronios[i].ID;
             }
         }
@@ -45,8 +49,11 @@ public class MLP {
         for (int i = 0; i < camadaSaida.tamanhoCamada; i++) {
             for (int j = 0; j < camadaOculta.tamanhoCamada; j++) {
                 double delta = taxaDeAprendizado * camadaSaida.neuronios[i].ultimo_erro * camadaOculta.neuronios[j].saida;
+                System.out.println("Peso original do neuronio de saida "+ i +"("+ j +")"+" = "+ camadaSaida.neuronios[i].pesos[j]);
                 camadaSaida.neuronios[i].pesos[j] = camadaSaida.neuronios[i].pesos[j] + delta;
+                System.out.println("Peso ajustado do neuronio de saida "+ i +"("+ j +")"+" = "+ camadaSaida.neuronios[i].pesos[j]);
             }
+            System.out.println();
         }
     }
 
@@ -72,7 +79,7 @@ public class MLP {
         return 0.0;
     }
 
-    public double calculaErroNeuronioOculto(Neuronio neuronio, double saida) {
+    public double calculaErroNeuronioOculto(Neuronio neuronio, double saida) {//Nao calcula
         //Somatoria dos erros de saida
         double somatoriaSaida = 0.0;
         for (int i = 0; i < camadaSaida.neuronios.length; i++) {
