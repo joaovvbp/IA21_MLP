@@ -8,7 +8,8 @@ public class Neuronio {
     Random random = new Random();
     public int ID = -1;
     public double saida;
-    public double somaponderada;
+    public double soma_ponderada;
+    public double ultimo_erro;
     public double[] pesos;
 
     public Neuronio(int pesosRecebidos, int ID) {
@@ -34,23 +35,23 @@ public class Neuronio {
     }
 
     public void somaPonderadaOculta(double[] entrada) {
-        somaponderada = 0;
+        soma_ponderada = 0;
         normalizaPesos();
         for (int i = 0; i < entrada.length; i++) {
-            somaponderada += entrada[i] * pesos[i];
+            soma_ponderada += entrada[i] * pesos[i];
             //System.out.println("R(" + somaponderada + ")IN(" + entrada[i] + ")" + "* PESO(" + pesos[i] + ") ");
         }
-        saida = sigmoide(somaponderada);
+        saida = sigmoide(soma_ponderada);
     }
 
     public void somaPonderadaSaida(Camada camadaoculta) {
-        somaponderada = 0;
+        soma_ponderada = 0;
         normalizaPesos();
         for (int i = 0; i < camadaoculta.tamanhoCamada; i++) {
-            somaponderada += camadaoculta.neuronios[i].saida * pesos[i];
+            soma_ponderada += camadaoculta.neuronios[i].saida * pesos[i];
             //System.out.println("R(" + somaponderada + ")IN(" + camadaoculta.neuronios[i].saida + ")" + "* PESO(" + pesos[i] + ") ");
         }
-        saida = sigmoide(somaponderada);
+        saida = sigmoide(soma_ponderada);
         System.out.println("Saida: " + saida);
     }
 

@@ -44,26 +44,27 @@ public class MLP {
         // Ajuste do peso entre i e j = taxa de aprendizado * o erro do neuronio j * a jesima entrada do neuronio i
         for (int i = 0; i < camadaSaida.tamanhoCamada; i++) {
             for (int j = 0; j < camadaOculta.tamanhoCamada; j++) {
-                double delta = taxaDeAprendizado * calculaErroNeuronioSaida(esperado, saida) * camadaOculta.neuronios[j].saida;
+                double delta = taxaDeAprendizado * camadaSaida.neuronios[i].ultimo_erro * camadaOculta.neuronios[j].saida;
                 camadaSaida.neuronios[i].pesos[j] = camadaSaida.neuronios[i].pesos[j] + delta;
             }
         }
     }
 
-    public void ajustaPesosCamadaOculta() {
-//        for (int i = 0; i < ; i++) {
-//            for (int j = 0; j < ; j++) {
-//
-//            }
-//        }
+    public void ajustaPesosCamadaOculta(double[] entrada, int idNeuronio, int saida){
+        for (int i = 0; i < camadaOculta.tamanhoCamada; i++) {
+            for (int j = 0; j < TAM_ENTRADA; j++) {
+                double delta = taxaDeAprendizado * camadaOculta.neuronios[i].ultimo_erro * entrada[i];
+                camadaOculta.neuronios[i].pesos[j] = camadaOculta.neuronios[i].pesos[j] + delta;
+            }
+        }
     }
 
     public double derivadaSigmoide(int entrada) { //Isso vai ser usado?
         return (double) ((1 - Neuronio.sigmoide(entrada)) * Neuronio.sigmoide(entrada));
     }
 
-    public double calculaErroNeuronioSaida(int saida, int esperado) {
-        return saida * (1 - saida) * (esperado - saida);
+    public double calculaErroNeuronioSaida(Neuronio neuronio, double saida, int esperado) {//Seria interessante armazenar esse erro em algum local, pra nao calcular duas vezes
+        return neuronio.ultimo_erro = saida * (1 - saida) * (esperado - saida);
     }
 
     public double calculaErroQuadratico() {
@@ -71,11 +72,11 @@ public class MLP {
         return 0.0;
     }
 
-    public double calculaErroNeuronioOculto(int idNeuronio, Camada camadaSaida, int saida) {
+    public double calculaErroNeuronioOculto(Neuronio neuronio, double saida) {
         //Somatoria dos erros de saida
         double somatoriaSaida = 0.0;
         for (int i = 0; i < camadaSaida.neuronios.length; i++) {
-            somatoriaSaida += (camadaSaida.neuronios[i].saida * camadaSaida.neuronios[i].pesos[idNeuronio]);
+            somatoriaSaida += (camadaSaida.neuronios[i].ultimo_erro * camadaSaida.neuronios[i].pesos[neuronio.ID]);
         }
         return saida * (1 - saida) + somatoriaSaida;
     }
