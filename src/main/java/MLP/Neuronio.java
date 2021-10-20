@@ -18,7 +18,8 @@ public class Neuronio {
 
     public void inicializaPesos() {
         for (int i = 0; i < pesos.length; i++) {
-            pesos[i] = random.nextDouble();
+            pesos[i] = random.nextDouble() * (1 + 1) - 1;
+            //System.out.println(pesos[i]);
         }
     }
 

@@ -7,7 +7,7 @@ public class MLP {
 
     public Camada camadaOculta;
     public Camada camadaSaida;
-    public double taxaDeAprendizado;
+    public double taxaDeAprendizado = 0.1;
 
     //Sao inicializadas as camadas, chamando os construtores dos neuronios, onde sao inicializados os pesos
     public MLP(int neuroniosCamadaOculta, double taxaDeAprendizado) {
@@ -25,13 +25,12 @@ public class MLP {
         }
     }
 
-    public int[] converteSaida(Camada camadaSaida){
-        int maiorValor = -1;
+    public int[] converteSaida(Camada camadaSaida) {
         int classe = -1;
 
         for (int i = 0; i < camadaSaida.tamanhoCamada; i++) {
-            if (camadaSaida.neuronios[i].saida > maiorValor){
-                maiorValor = camadaSaida.neuronios[i].ID;
+            if (camadaSaida.neuronios[i].saida > classe) {
+                classe = camadaSaida.neuronios[i].ID;
             }
         }
         //Setando o array
@@ -41,15 +40,25 @@ public class MLP {
         return saida;
     }
 
-    public void atualizaPesosCamadaNormal() {
-
+    public void ajustaPesosCamadaSaida(int esperado, int saida) {
+        // Ajuste do peso entre i e j = taxa de aprendizado * o erro do neuronio j * a jesima entrada do neuronio i
+        for (int i = 0; i < camadaSaida.tamanhoCamada; i++) {
+            for (int j = 0; j < camadaOculta.tamanhoCamada; j++) {
+                double delta = taxaDeAprendizado * calculaErroNeuronioSaida(esperado, saida) * camadaOculta.neuronios[j].saida;
+                camadaSaida.neuronios[i].pesos[j] = camadaSaida.neuronios[i].pesos[j] + delta;
+            }
+        }
     }
 
-    public void atualizaPesosCamadaOculta() {
-
+    public void ajustaPesosCamadaOculta() {
+//        for (int i = 0; i < ; i++) {
+//            for (int j = 0; j < ; j++) {
+//
+//            }
+//        }
     }
 
-    public double derivadaSigmoide(int entrada) {
+    public double derivadaSigmoide(int entrada) { //Isso vai ser usado?
         return (double) ((1 - Neuronio.sigmoide(entrada)) * Neuronio.sigmoide(entrada));
     }
 
@@ -57,7 +66,8 @@ public class MLP {
         return saida * (1 - saida) * (esperado - saida);
     }
 
-    public double calculaErroQuadratico(){
+    public double calculaErroQuadratico() {
+        //O que fazer com isso?
         return 0.0;
     }
 
@@ -77,5 +87,4 @@ public class MLP {
 
     //Tentei resolver isso usando um valor ID no neuronio, correspondente a sua posicao no vetor de pesos dos neuronios que recebem sua saida.
     //Colocar em um loop pra testar
-
 }
