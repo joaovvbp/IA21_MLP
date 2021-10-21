@@ -9,7 +9,7 @@ public class MLP {
 
     public Camada camadaOculta;
     public Camada camadaSaida;
-    public double taxaDeAprendizado = 0.1;
+    public double taxaDeAprendizado;
 
     //Sao inicializadas as camadas, chamando os construtores dos neuronios, onde sao inicializados os pesos
     public MLP(int neuroniosCamadaOculta, double taxaDeAprendizado) {
@@ -48,21 +48,34 @@ public class MLP {
         // Ajuste do peso entre i e j = taxa de aprendizado * o erro do neuronio j * a jesima entrada do neuronio i
         for (int i = 0; i < camadaSaida.tamanhoCamada; i++) {
             for (int j = 0; j < camadaOculta.tamanhoCamada; j++) {
-                double delta = taxaDeAprendizado * camadaSaida.neuronios[i].ultimo_erro * camadaOculta.neuronios[j].saida;
-                System.out.println("Peso original do neuronio de saida "+ i +"("+ j +")"+" = "+ camadaSaida.neuronios[i].pesos[j]);
+                double delta = taxaDeAprendizado * camadaSaida.neuronios[i].ultimo_erro * camadaSaida.neuronios[i].soma_ponderada;
+
+                //double buffer = camadaSaida.neuronios[i].pesos[j]; //APENAS PARA TESTES!!
+                //System.out.println("Peso original do neuronio de saida "+ i +"("+ j +")"+" = "+ camadaSaida.neuronios[i].pesos[j]);
+
                 camadaSaida.neuronios[i].pesos[j] = camadaSaida.neuronios[i].pesos[j] + delta;
-                System.out.println("Peso ajustado do neuronio de saida "+ i +"("+ j +")"+" = "+ camadaSaida.neuronios[i].pesos[j]);
+
+                //System.out.println("Peso ajustado do neuronio de saida "+ i +"("+ j +")"+" = "+ (camadaSaida.neuronios[i].pesos[j]));
+                //System.out.println("Ajuste do neuronio de saida "+ i +"("+ j +")"+" = "+ (buffer - camadaSaida.neuronios[i].pesos[j]));
             }
-            System.out.println();
+            //System.out.println();
         }
     }
 
-    public void ajustaPesosCamadaOculta(double[] entrada, int idNeuronio, int saida){
+    public void ajustaPesosCamadaOculta(double[] entrada){
         for (int i = 0; i < camadaOculta.tamanhoCamada; i++) {
             for (int j = 0; j < TAM_ENTRADA; j++) {
-                double delta = taxaDeAprendizado * camadaOculta.neuronios[i].ultimo_erro * entrada[i];
+                double delta = taxaDeAprendizado * camadaOculta.neuronios[i].ultimo_erro * camadaOculta.neuronios[i].soma_ponderada;//Essa parte me causou sofrimento
+
+                double buffer = camadaOculta.neuronios[i].pesos[j]; //APENAS PARA TESTES!!
+                System.out.println("Peso original do neuronio oculto "+ i +"("+ j +")"+" = "+ camadaOculta.neuronios[i].pesos[j]);
+
                 camadaOculta.neuronios[i].pesos[j] = camadaOculta.neuronios[i].pesos[j] + delta;
+
+                System.out.println("Peso ajustado do neuronio oculto "+ i +"("+ j +")"+" = "+ (camadaOculta.neuronios[i].pesos[j]));
+                System.out.println("Ajuste do neuronio oculto "+ i +"("+ j +")"+" = "+ (buffer - camadaOculta.neuronios[i].pesos[j]));
             }
+            System.out.println("\n\n\n");
         }
     }
 
@@ -71,7 +84,8 @@ public class MLP {
     }
 
     public double calculaErroNeuronioSaida(Neuronio neuronio, double saida, int esperado) {//Seria interessante armazenar esse erro em algum local, pra nao calcular duas vezes
-        return neuronio.ultimo_erro = saida * (1 - saida) * (esperado - saida);
+        neuronio.ultimo_erro = saida * (1 - saida) * (esperado - saida);
+        return neuronio.ultimo_erro;
     }
 
     public double calculaErroQuadratico() {
@@ -85,7 +99,8 @@ public class MLP {
         for (int i = 0; i < camadaSaida.neuronios.length; i++) {
             somatoriaSaida += (camadaSaida.neuronios[i].ultimo_erro * camadaSaida.neuronios[i].pesos[neuronio.ID]);
         }
-        return saida * (1 - saida) + somatoriaSaida;
+        neuronio.ultimo_erro = saida * (1 - saida) * somatoriaSaida;
+        return neuronio.ultimo_erro;
     }
     //Para cada neuronio h, da camada oculta faça:
     // ErroNeuronioOculto = SaidaNeuronioOculto ( 1 - SaidaNeuronioOculto) + somatoria dos (PesoOcultaSaida * ErroSaida)
