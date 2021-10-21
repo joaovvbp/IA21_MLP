@@ -45,10 +45,9 @@ public class MLP {
     }
 
     public void ajustaPesosCamadaSaida(int esperado, int saida) {
-        // Ajuste do peso entre i e j = taxa de aprendizado * o erro do neuronio j * a jesima entrada do neuronio i
         for (int i = 0; i < camadaSaida.tamanhoCamada; i++) {
             for (int j = 0; j < camadaOculta.tamanhoCamada; j++) {
-                double delta = taxaDeAprendizado * camadaSaida.neuronios[i].ultimo_erro * camadaSaida.neuronios[i].soma_ponderada;
+                double delta = taxaDeAprendizado * camadaSaida.neuronios[i].ultimo_erro * camadaOculta.neuronios[i].saida;
 
                 //double buffer = camadaSaida.neuronios[i].pesos[j]; //APENAS PARA TESTES!!
                 //System.out.println("Peso original do neuronio de saida "+ i +"("+ j +")"+" = "+ camadaSaida.neuronios[i].pesos[j]);
@@ -65,7 +64,7 @@ public class MLP {
     public void ajustaPesosCamadaOculta(double[] entrada){
         for (int i = 0; i < camadaOculta.tamanhoCamada; i++) {
             for (int j = 0; j < TAM_ENTRADA; j++) {
-                double delta = taxaDeAprendizado * camadaOculta.neuronios[i].ultimo_erro * camadaOculta.neuronios[i].soma_ponderada;//Essa parte me causou sofrimento
+                double delta = taxaDeAprendizado * camadaOculta.neuronios[i].ultimo_erro * entrada[i];//Essa parte me causou sofrimento
 
                 double buffer = camadaOculta.neuronios[i].pesos[j]; //APENAS PARA TESTES!!
                 System.out.println("Peso original do neuronio oculto "+ i +"("+ j +")"+" = "+ camadaOculta.neuronios[i].pesos[j]);
