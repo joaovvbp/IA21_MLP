@@ -6,6 +6,7 @@ public class MLP {
     final int MIN_PESO = -1;
     final int MAX_PESO = 1;
     final int TAM_ENTRADA = 64;
+    final int TAM_SAIDA = 10;
 
     public Camada camadaOculta;
     public Camada camadaSaida;
@@ -15,7 +16,7 @@ public class MLP {
     public MLP(int neuroniosCamadaOculta, double taxaDeAprendizado) {
         this.taxaDeAprendizado = taxaDeAprendizado;
         camadaOculta = new Camada(neuroniosCamadaOculta, TAM_ENTRADA);
-        camadaSaida = new Camada(10, camadaOculta.tamanhoCamada);
+        camadaSaida = new Camada(TAM_SAIDA, camadaOculta.tamanhoCamada);
     }
 
     public void forwardPropagation(double[] entrada, MLP rede) {
@@ -67,14 +68,14 @@ public class MLP {
                 double delta = taxaDeAprendizado * camadaOculta.neuronios[i].ultimo_erro * entrada[i];//Essa parte me causou sofrimento
 
                 double buffer = camadaOculta.neuronios[i].pesos[j]; //APENAS PARA TESTES!!
-                System.out.println("Peso original do neuronio oculto "+ i +"("+ j +")"+" = "+ camadaOculta.neuronios[i].pesos[j]);
+                //System.out.println("Peso original do neuronio oculto "+ i +"("+ j +")"+" = "+ camadaOculta.neuronios[i].pesos[j]);
 
                 camadaOculta.neuronios[i].pesos[j] = camadaOculta.neuronios[i].pesos[j] + delta;
 
-                System.out.println("Peso ajustado do neuronio oculto "+ i +"("+ j +")"+" = "+ (camadaOculta.neuronios[i].pesos[j]));
-                System.out.println("Ajuste do neuronio oculto "+ i +"("+ j +")"+" = "+ (buffer - camadaOculta.neuronios[i].pesos[j]));
+                //System.out.println("Peso ajustado do neuronio oculto "+ i +"("+ j +")"+" = "+ (camadaOculta.neuronios[i].pesos[j]));
+                //System.out.println("Ajuste do neuronio oculto "+ i +"("+ j +")"+" = "+ (buffer - camadaOculta.neuronios[i].pesos[j]));
             }
-            System.out.println("\n\n\n");
+            //System.out.println("\n\n\n");
         }
     }
 
@@ -87,8 +88,8 @@ public class MLP {
         return neuronio.ultimo_erro;
     }
 
-    public double calculaErroQuadratico() {
-        //O que fazer com isso?
+    public double calculaThreshold() {
+
         return 0.0;
     }
 
@@ -101,12 +102,4 @@ public class MLP {
         neuronio.ultimo_erro = saida * (1 - saida) * somatoriaSaida;
         return neuronio.ultimo_erro;
     }
-    //Para cada neuronio h, da camada oculta faça:
-    // ErroNeuronioOculto = SaidaNeuronioOculto ( 1 - SaidaNeuronioOculto) + somatoria dos (PesoOcultaSaida * ErroSaida)
-
-    //Como conectar os neuronios da camada de saida com os neuronios da camada oculta??
-    //Nao existe conexao entre os neuronios, apenas o vetor de pesos, que nao liga de fato um neuronio ao outro
-
-    //Tentei resolver isso usando um valor ID no neuronio, correspondente a sua posicao no vetor de pesos dos neuronios que recebem sua saida.
-    //Colocar em um loop pra testar
 }

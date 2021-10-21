@@ -8,7 +8,7 @@ import java.util.List;
 
 public class ProcessamentoDeArquivo {
 
-    ProcessamentoDeArquivo(){ } //Construtor padrão
+    public ProcessamentoDeArquivo(){ } //Construtor padrão
 
     public static List<Exemplo> entradas = new ArrayList<>(); //Vetor com os exemplos de entrada
 

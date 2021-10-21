@@ -1,5 +1,8 @@
 import MLP.MLP;
 import MLP.Neuronio;
+import Processamento.Holdout;
+import Processamento.KFoldCrossValidation;
+import Processamento.ProcessamentoDeArquivo;
 
 public class TesteInformalMLP {
     static double[] entrada1 = new double[]{0, 0, 6, 12, 14, 5, 0, 0, 0, 4, 16, 11, 8, 15, 6, 0, 0, 4, 16, 7, 2, 12, 6, 0, 0, 0, 13, 15, 15, 13, 2, 0, 0, 0, 1, 16, 16, 6, 0, 0, 0, 0, 8, 15, 14, 15, 1, 0, 0, 3, 16, 10, 10, 16, 1, 0, 0, 1, 12, 16, 14, 5, 0, 0};//8
@@ -46,6 +49,7 @@ public class TesteInformalMLP {
                 //System.out.println("Erro do neuronio de saida (" + i + ") = " + rede1.camadaSaida.neuronios[i].ultimo_erro);
             }
         }
+
         //System.out.println();
 
         for (int i = 0; i < rede1.camadaOculta.tamanhoCamada; i++) {
@@ -58,11 +62,9 @@ public class TesteInformalMLP {
             }
         }
 
-
         rede1.ajustaPesosCamadaSaida(classe_esperada , classe_obtida);
 
         rede1.ajustaPesosCamadaOculta(entrada);
-
 
     }
 
