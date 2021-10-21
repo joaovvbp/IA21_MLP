@@ -24,8 +24,10 @@ public class ProcessamentoDeArquivo {
                 String[] data = row.split(",");
                 Exemplo ex = new Exemplo();
                 for (int i = 0; i < data.length; i++) {
-                    if (i < 64)
+                    if (i < 64){
                         ex.vetorEntradas[i] = Double.parseDouble(data[i]); //Converte String do arquivo para Double e coloca no vetor entrada de Processamento.Exemplo
+                        if (ex.vetorEntradas[i] == 0) ex.vetorEntradas[i] = -1.0;
+                    }
                     else ex.rotulo[(int) Double.parseDouble(data[i])] = 1; //Atribui o rótulo (que é o último valor)
                 }
                 entradas.add(ex);
