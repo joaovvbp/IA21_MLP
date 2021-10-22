@@ -6,13 +6,13 @@ import java.util.Random;
 
 public class Holdout {
 
-    static List<Exemplo> conjTreinamento = new ArrayList<>();
-    static List<Exemplo> conjValidacao = new ArrayList<>();
-    static List<Exemplo> conjTeste = new ArrayList<>();
-    static Random random = new Random();
-    static double taxaTeste = 0.0; //Não mudar
-    static double taxaTreinamento = 0.0; //Não mudar
-    static double taxaValidacao = 0.0; //Não mudar
+    public static List<Exemplo> conjTreinamento = new ArrayList<>();
+    public static List<Exemplo> conjValidacao = new ArrayList<>();
+    public static List<Exemplo> conjTeste = new ArrayList<>();
+    public static Random random = new Random();
+    public static double taxaTeste = 0.0; //Não mudar
+    public static double taxaTreinamento = 0.0; //Não mudar
+    public static double taxaValidacao = 0.0; //Não mudar
 
     Holdout(){ }
 

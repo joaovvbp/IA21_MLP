@@ -34,7 +34,7 @@ public class Neuronio {
         }
     }
 
-    public void somaPonderadaOculta(double[] entrada) {
+    public void somaPonderadaOculta(Double[] entrada) {
         soma_ponderada = 0;
         normalizaPesos();
         for (int i = 0; i < entrada.length; i++) {
