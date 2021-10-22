@@ -8,6 +8,20 @@ import Processamento.ProcessamentoDeArquivo;
 import java.util.ArrayList;
 import java.util.List;
 
+/*
+* todo
+* Passos a serem implementados
+*
+* 1 - Preparar os conjuntos de treinamento, verificacao e teste
+* 2 - Rodar as epocas ate a rede convergir
+* 3 - Verificar
+* 4 - Testar
+*
+* Notas:
+* - Lembrar de desenvolver outra funcao implementando o momentum
+* - Verificar o codigo procurando simplificar e conferir se todas as funcoes estao de acordo com o esperado
+*/
+
 public class Main { // Refatorar, ou comecar do zero sem este esqueleto
     public static void runner() {
         ProcessamentoDeArquivo.processarDados("src/main/resources/optdigits.csv");
