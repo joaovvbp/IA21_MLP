@@ -10,7 +10,9 @@ public class Neuronio {
     public double saida;
     public double soma_ponderada;
     public double ultimo_erro;
+    public double ultimo_ajuste = 0.0;
     public double[] pesos;
+
 
     public Neuronio(int pesosRecebidos, int ID) {
         this.ID = ID;

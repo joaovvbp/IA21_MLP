@@ -5,6 +5,7 @@ import Processamento.Exemplo;
 import Processamento.Holdout;
 import Processamento.ProcessamentoDeArquivo;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -72,11 +73,11 @@ public class Main { // Refatorar, ou comecar do zero sem este esqueleto
 
 //            System.out.println("\n\n");
 
-            rede.ajustaPesosCamadaSaida(classe_esperada, classe_obtida);
+            rede.ajustaPesosCamadaSaidaCM(classe_esperada, classe_obtida);
 
 //            System.out.println("\n\n");
 
-            rede.ajustaPesosCamadaOculta(entrada);
+            rede.ajustaPesosCamadaOcultaCM(entrada);
         }
         erro_geral = rede.calculaErroTotal(Holdout.conjTreinamento, rede);
 
@@ -109,12 +110,13 @@ public class Main { // Refatorar, ou comecar do zero sem este esqueleto
         do {
             erro_da_epoca = treinaRede(rede);
             System.out.println("Erro da epoca " + i + " = " + erro_da_epoca);
+
             rede.saidas_da_rede.clear();
             i++;
         } while (erro_da_epoca > 0.5);
     }
 
     public static void main(String[] args) {
-        runner(50, 0.001);
+        runner(35, 0.05);
     }
 }
