@@ -52,7 +52,7 @@ public class Neuronio {
             //System.out.println("R(" + somaponderada + ")IN(" + camadaoculta.neuronios[i].saida + ")" + "* PESO(" + pesos[i] + ") ");
         }
         saida = sigmoide(soma_ponderada);
-        System.out.println("Saida "+ID+": " + saida);
+//        System.out.println("Saida "+ID+": " + saida);
     }
 
     public static double sigmoide(double somaponderadaDoNeuronio) {
