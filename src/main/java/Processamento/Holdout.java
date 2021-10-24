@@ -10,10 +10,7 @@ public class Holdout {
     public static List<Exemplo> conjValidacao = new ArrayList<>();
     public static List<Exemplo> conjTeste = new ArrayList<>();
     public static Random random = new Random();
-    public static double taxaTeste = 0.0; //Não mudar
-    public static double taxaTreinamento = 0.0; //Não mudar
-    public static double taxaValidacao = 0.0; //Não mudar
-
+    
     Holdout(){ }
 
     public static void holdout() {

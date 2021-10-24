@@ -1,12 +1,8 @@
 package Runner;
 
 import MLP.MLP;
-import Processamento.Exemplo;
 import Processamento.Holdout;
 import Processamento.ProcessamentoDeArquivo;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /*
  * todo
@@ -115,6 +111,6 @@ public class Main { // Refatorar, ou comecar do zero sem este esqueleto
     }
 
     public static void main(String[] args) {
-        runner(50, 0.001);
+        runner(30, 0.01);
     }
 }
