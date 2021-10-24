@@ -8,7 +8,7 @@ public class Neuronio {
     Random random = new Random();
     public int ID = -1;
     public double saida;
-    public double soma_ponderada;
+    public double somaPonderada;
     public double ultimoErro;
     public double[] pesos;
 
@@ -25,37 +25,37 @@ public class Neuronio {
     }
 
     public void normalizaPesos() {
-        double somapesos = 0;
+        double somaPesos = 0;
         for (double d : pesos) {
-            somapesos += d;
+            somaPesos += d;
         }
         for (int i = 0; i < pesos.length; i++) {
-            pesos[i] = pesos[i] / somapesos;
+            pesos[i] = pesos[i] / somaPesos;
         }
     }
 
     public void somaPonderadaOculta(Double[] entrada) {
-        soma_ponderada = 0;
+        somaPonderada = 0;
         normalizaPesos();
         for (int i = 0; i < entrada.length; i++) {
-            soma_ponderada += entrada[i] * pesos[i];
+            somaPonderada += entrada[i] * pesos[i];
             //System.out.println("R(" + somaponderada + ")IN(" + entrada[i] + ")" + "* PESO(" + pesos[i] + ") ");
         }
-        saida = sigmoide(soma_ponderada);
+        saida = sigmoide(somaPonderada);
     }
 
-    public void somaPonderadaSaida(Camada camadaoculta) {
-        soma_ponderada = 0;
+    public void somaPonderadaSaida(Camada camadaOculta) {
+        somaPonderada = 0;
         normalizaPesos();
-        for (int i = 0; i < camadaoculta.tamanhoCamada; i++) {
-            soma_ponderada += camadaoculta.neuronios[i].saida * pesos[i];
+        for (int i = 0; i < camadaOculta.tamanhoCamada; i++) {
+            somaPonderada += camadaOculta.neuronios[i].saida * pesos[i];
             //System.out.println("R(" + somaponderada + ")IN(" + camadaoculta.neuronios[i].saida + ")" + "* PESO(" + pesos[i] + ") ");
         }
-        saida = sigmoide(soma_ponderada);
+        saida = sigmoide(somaPonderada);
 //        System.out.println("Saida "+ID+": " + saida);
     }
 
-    public static double sigmoide(double somaponderadaDoNeuronio) {
-        return 1 / (1 + exp(somaponderadaDoNeuronio));
+    public static double sigmoide(double somaPonderadaDoNeuronio) {
+        return 1 / (1 + exp(somaPonderadaDoNeuronio));
     }
 }

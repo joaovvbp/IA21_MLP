@@ -10,7 +10,6 @@ public class KFoldCrossValidation {
     public static void kFoldCrossValidation(){
         embaralharDados();
         dividir();
-        exibirTamanhos();
     }
 
     public static void embaralharDados(){
@@ -26,12 +25,4 @@ public class KFoldCrossValidation {
             folds.add(fold);
         }
     }
-
-    public static void exibirTamanhos(){
-        for (int i = 0; i < folds.size(); i++) {
-            System.out.println("fold ("+i+"): "+folds.get(i).size());
-        }
-
-    }
-
 }
