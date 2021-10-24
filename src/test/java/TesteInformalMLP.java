@@ -26,7 +26,7 @@ public class TesteInformalMLP {
 
         int[] vetor_saida_obtido = rede1.converteSaida(rede1.camadaSaida);
 
-        rede1.saidas_da_rede.add(vetor_saida_obtido);
+        rede1.saidasDaRede.add(vetor_saida_obtido);
 
         System.out.println();
         for (int i = 0; i < vetor_saida_obtido.length; i++) {
@@ -44,10 +44,10 @@ public class TesteInformalMLP {
         for (int i = 0; i < rede1.camadaSaida.tamanhoCamada; i++) {
             if (i == classe_esperada) {
                 rede1.calculaErroNeuronioSaida(rede1.camadaSaida.neuronios[i], rede1.camadaSaida.neuronios[i].saida, 1);
-                System.out.println("Erro do neuronio de saida (" + i + ")[Esperado] = " + rede1.camadaSaida.neuronios[i].ultimo_erro);
+                System.out.println("Erro do neuronio de saida (" + i + ")[Esperado] = " + rede1.camadaSaida.neuronios[i].ultimoErro);
             } else {
                 rede1.calculaErroNeuronioSaida(rede1.camadaSaida.neuronios[i], rede1.camadaSaida.neuronios[i].saida, 0);
-                System.out.println("Erro do neuronio de saida (" + i + ") = " + rede1.camadaSaida.neuronios[i].ultimo_erro);
+                System.out.println("Erro do neuronio de saida (" + i + ") = " + rede1.camadaSaida.neuronios[i].ultimoErro);
             }
         }
 
@@ -56,10 +56,10 @@ public class TesteInformalMLP {
         for (int i = 0; i < rede1.camadaOculta.tamanhoCamada; i++) {
             if (i == classe_esperada) {
                 rede1.calculaErroNeuronioOculto(rede1.camadaOculta.neuronios[i], rede1.camadaOculta.neuronios[i].saida);
-                System.out.println("Erro do neuronio oculto (" + i + ")[Esperado] = " + rede1.camadaOculta.neuronios[i].ultimo_erro);
+                System.out.println("Erro do neuronio oculto (" + i + ")[Esperado] = " + rede1.camadaOculta.neuronios[i].ultimoErro);
             } else {
                 rede1.calculaErroNeuronioOculto(rede1.camadaOculta.neuronios[i], rede1.camadaOculta.neuronios[i].saida);
-                System.out.println("Erro do neuronio oculto (" + i + ") = " + rede1.camadaOculta.neuronios[i].ultimo_erro);
+                System.out.println("Erro do neuronio oculto (" + i + ") = " + rede1.camadaOculta.neuronios[i].ultimoErro);
             }
         }
 

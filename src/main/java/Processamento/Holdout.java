@@ -10,15 +10,11 @@ public class Holdout {
     public static List<Exemplo> conjValidacao = new ArrayList<>();
     public static List<Exemplo> conjTeste = new ArrayList<>();
     public static Random random = new Random();
-    public static double taxaTeste = 0.0; //Não mudar
-    public static double taxaTreinamento = 0.0; //Não mudar
-    public static double taxaValidacao = 0.0; //Não mudar
-
+    
     Holdout(){ }
 
     public static void holdout() {
         dividir();
-        exibirTaxaDiv();
     }
 
     //Faz a divisão dos elementos entre os dois conjuntos
@@ -45,18 +41,4 @@ public class Holdout {
             }
         }
     }
-
-    public static void calcularTaxas() {
-        taxaTeste = conjTeste.size()/(double)(conjTreinamento.size()+conjTeste.size()+conjValidacao.size());
-        taxaTreinamento = conjTreinamento.size()/(double)(conjTreinamento.size()+conjTeste.size()+conjValidacao.size());
-        taxaValidacao = conjValidacao.size()/(double)(conjTreinamento.size()+conjTeste.size()+conjValidacao.size());
-    }
-
-    public static void exibirTaxaDiv() {
-        calcularTaxas();
-        System.out.println("% conjunto de treinamento: "+taxaTreinamento*100+" tamanho: "+conjTreinamento.size());
-        System.out.println("% conjunto de validação: "+taxaValidacao*100+" tamanho: "+conjValidacao.size());
-        System.out.println("% conjunto de teste: "+taxaTeste*100+" tamanho: "+conjTeste.size());
-    }
-
 }
