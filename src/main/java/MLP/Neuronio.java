@@ -9,7 +9,7 @@ public class Neuronio {
     public int ID = -1;
     public double saida;
     public double soma_ponderada;
-    public double ultimo_erro;
+    public double ultimoErro;
     public double[] pesos;
 
     public Neuronio(int pesosRecebidos, int ID) {

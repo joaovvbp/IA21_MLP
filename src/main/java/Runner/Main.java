@@ -38,20 +38,20 @@ public class Main { // Refatorar, ou comecar do zero sem este esqueleto
         //Deve iterar em todas as entradas, calculando o erro, ajustando os pesos e passando para a prox entrada
         //Limitada pela funcao treshold
 
-        double erro_geral = 0.0;
+        double erroGeral = 0.0;
         //Passa por todos as entradas do conjunto de treinamento
         for (int i = 0; i < Holdout.conjTreinamento.size(); i++) {//CORRIGIR
             Double[] entrada = Holdout.conjTreinamento.get(i).vetorEntradas;
-            int classe_esperada = Holdout.conjTreinamento.get(i).retornaRotulo();
+            int classeEsperada = Holdout.conjTreinamento.get(i).retornaRotulo();
 
             rede.forwardPropagation(entrada, rede);
 
-            rede.saidas_da_rede.add(rede.converteSaida(rede.camadaSaida));
+            rede.saidasDaRede.add(rede.converteSaida(rede.camadaSaida));
 
-            int classe_obtida = rede.retornaRotulo(rede.converteSaida(rede.camadaSaida));
+            int classeObtida = rede.retornaRotulo(rede.converteSaida(rede.camadaSaida));
 
             for (int j = 0; j < rede.camadaSaida.tamanhoCamada; j++) {
-                if (j == classe_esperada) {
+                if (j == classeEsperada) {
                     rede.calculaErroNeuronioSaida(rede.camadaSaida.neuronios[j], rede.camadaSaida.neuronios[j].saida, 1);
 //                    System.out.println("Erro do neuronio de saida (" + j + ")[Esperado] = " + rede.camadaSaida.neuronios[j].ultimo_erro);
                 } else {
@@ -61,7 +61,7 @@ public class Main { // Refatorar, ou comecar do zero sem este esqueleto
             }
 
             for (int k = 0; k < rede.camadaOculta.tamanhoCamada; k++) {
-                if (k == classe_esperada) {
+                if (k == classeEsperada) {
                     rede.calculaErroNeuronioOculto(rede.camadaOculta.neuronios[k], rede.camadaOculta.neuronios[k].saida);
 //                    System.out.println("Erro do neuronio oculto (" + k + ")[Esperado] = " + rede.camadaOculta.neuronios[k].ultimo_erro);
                 } else {
@@ -72,13 +72,13 @@ public class Main { // Refatorar, ou comecar do zero sem este esqueleto
 
 //            System.out.println("\n\n");
 
-            rede.ajustaPesosCamadaSaida(classe_esperada, classe_obtida);
+            rede.ajustaPesosCamadaSaida(classeEsperada, classeObtida);
 
 //            System.out.println("\n\n");
 
             rede.ajustaPesosCamadaOculta(entrada);
         }
-        erro_geral = rede.calculaErroTotal(Holdout.conjTreinamento, rede);
+        erroGeral = rede.calculaErroTotal(Holdout.conjTreinamento, rede);
 
 //        System.out.println("15 primeiros pesos do primeiro neuronio oculto: ");
 //        for (int i = 0; i < 10; i++) {
@@ -86,7 +86,7 @@ public class Main { // Refatorar, ou comecar do zero sem este esqueleto
 //        }
 //        System.out.println();
 
-        return erro_geral;
+        return erroGeral;
     }
 
     //Metodo para a etapa de verificacao
@@ -99,19 +99,19 @@ public class Main { // Refatorar, ou comecar do zero sem este esqueleto
 
     }
 
-    public static void runner(int neuronios_ocultos, double taxa_aprendizado) {
-        MLP rede = new MLP(neuronios_ocultos, taxa_aprendizado);
+    public static void runner(int neuroniosOcultos, double taxaAprendizado) {
+        MLP rede = new MLP(neuroniosOcultos, taxaAprendizado);
 
         preparaDados("src/main/resources/optdigits.csv");//Converter para um endereco relativo de acordo com a estrutura do projeto
 
-        double erro_da_epoca = 999999;
+        double erroDaEpoca = 999999;
         int i = 0;
         do {
-            erro_da_epoca = treinaRede(rede);
-            System.out.println("Erro da epoca " + i + " = " + erro_da_epoca);
-            rede.saidas_da_rede.clear();
+            erroDaEpoca = treinaRede(rede);
+            System.out.println("Erro da epoca " + i + " = " + erroDaEpoca);
+            rede.saidasDaRede.clear();
             i++;
-        } while (erro_da_epoca > 0.5);
+        } while (erroDaEpoca > 0.5);
     }
 
     public static void main(String[] args) {

@@ -11,7 +11,7 @@ public class MLP {
     final int TAM_ENTRADA = 64;
     final int TAM_SAIDA = 10;
 
-    public List<int[]> saidas_da_rede = new ArrayList<>();
+    public List<int[]> saidasDaRede = new ArrayList<>();
 
     public Camada camadaOculta;
     public Camada camadaSaida;
@@ -34,12 +34,12 @@ public class MLP {
     }
 
     public int[] converteSaida(Camada camadaSaida) {
-        double maior_saida = -1.0;
+        double maiorSaida = -1.0;
         int classe = -1;
 
         for (int i = 0; i < camadaSaida.tamanhoCamada; i++) {
-            if (camadaSaida.neuronios[i].saida > maior_saida) {
-                maior_saida = camadaSaida.neuronios[i].saida;
+            if (camadaSaida.neuronios[i].saida > maiorSaida) {
+                maiorSaida = camadaSaida.neuronios[i].saida;
                 classe = camadaSaida.neuronios[i].ID;
             }
         }
@@ -65,7 +65,7 @@ public class MLP {
     public void ajustaPesosCamadaSaida(int esperado, int saida) {
         for (int i = 0; i < camadaSaida.tamanhoCamada; i++) {
             for (int j = 0; j < camadaOculta.tamanhoCamada; j++) {
-                double delta = taxaDeAprendizado * camadaSaida.neuronios[i].ultimo_erro * camadaOculta.neuronios[i].saida;
+                double delta = taxaDeAprendizado * camadaSaida.neuronios[i].ultimoErro * camadaOculta.neuronios[i].saida;
 
                 double buffer = camadaSaida.neuronios[i].pesos[j]; //APENAS PARA TESTES!!
 //                System.out.println("Peso original do neuronio de saida "+ i +"("+ j +")"+" = "+ camadaSaida.neuronios[i].pesos[j]);
@@ -89,7 +89,7 @@ public class MLP {
     public void ajustaPesosCamadaOculta(Double[] entrada){
         for (int i = 0; i < camadaOculta.tamanhoCamada; i++) {
             for (int j = 0; j < TAM_ENTRADA; j++) {
-                double delta = taxaDeAprendizado * camadaOculta.neuronios[i].ultimo_erro * entrada[i];//Com uma entrada 0, isso resulta num ajuste de 0
+                double delta = taxaDeAprendizado * camadaOculta.neuronios[i].ultimoErro * entrada[i];//Com uma entrada 0, isso resulta num ajuste de 0
 //                System.out.println("\n\n ENTRADA"+i+" = "+ entrada[i]+"\n\n");
 
                 double buffer = camadaOculta.neuronios[i].pesos[j]; //APENAS PARA TESTES!!
@@ -97,11 +97,11 @@ public class MLP {
 
                 camadaOculta.neuronios[i].pesos[j] = camadaOculta.neuronios[i].pesos[j] + delta;
 
-                double somapesos = 0;
+                double somaPesos = 0;
                 for (double d : camadaOculta.neuronios[i].pesos) {
-                    somapesos += d;
+                    somaPesos += d;
                 }
-                camadaOculta.neuronios[i].pesos[j] =  camadaOculta.neuronios[i].pesos[j] / somapesos;
+                camadaOculta.neuronios[i].pesos[j] =  camadaOculta.neuronios[i].pesos[j] / somaPesos;
 
 //                System.out.println("Peso ajustado do neuronio oculto "+ i +"("+ j +")"+" = "+ (camadaOculta.neuronios[i].pesos[j]));
 //                System.out.println("Ajuste do neuronio oculto "+ i +"("+ j +")"+" = "+ (buffer - camadaOculta.neuronios[i].pesos[j]));
@@ -115,15 +115,15 @@ public class MLP {
     }
 
     public double calculaErroNeuronioSaida(Neuronio neuronio, double saida, int esperado) {//Seria interessante armazenar esse erro em algum local, pra nao calcular duas vezes
-        neuronio.ultimo_erro = saida * (1 - saida) * (esperado - saida);
-        return neuronio.ultimo_erro;
+        neuronio.ultimoErro = saida * (1 - saida) * (esperado - saida);
+        return neuronio.ultimoErro;
     }
 
     public double calculaErroTotal(List<Exemplo> conjunto, MLP rede) {
         // 1/2 * somatoria de e exemplos * ( somatoria de k saidas * (saida esperada de k - saida obtida de k)**2)
         double erro_total = 0;
         for (int i = 0; i < conjunto.size()-1; i++) {
-            erro_total += Math.pow(conjunto.get(i).retornaRotulo() - retornaRotulo(rede.saidas_da_rede.get(i)),2);
+            erro_total += Math.pow(conjunto.get(i).retornaRotulo() - retornaRotulo(rede.saidasDaRede.get(i)),2);
 //            System.out.println("Erro total na iteracao("+i+") = "+ erro_total);
         }
 //        System.out.println("\n"+(0.5) * conjunto.size() * (erro_total));
@@ -134,9 +134,9 @@ public class MLP {
         //Somatoria dos erros de saida
         double somatoriaSaida = 0.0;
         for (int i = 0; i < camadaSaida.neuronios.length; i++) {
-            somatoriaSaida += (camadaSaida.neuronios[i].ultimo_erro * camadaSaida.neuronios[i].pesos[neuronio.ID]);
+            somatoriaSaida += (camadaSaida.neuronios[i].ultimoErro * camadaSaida.neuronios[i].pesos[neuronio.ID]);
         }
-        neuronio.ultimo_erro = saida * (1 - saida) * somatoriaSaida;
-        return neuronio.ultimo_erro;
+        neuronio.ultimoErro = saida * (1 - saida) * somatoriaSaida;
+        return neuronio.ultimoErro;
     }
 }
