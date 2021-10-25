@@ -6,17 +6,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MLP {
-    final int MIN_PESO = -1;
-    final int MAX_PESO = 1;
     final int TAM_ENTRADA = 64;
     final int TAM_SAIDA = 10;
-    final double momentum = 0.6;
+    public double momentum;
 
     public List<int[]> saidas_da_rede = new ArrayList<>();
 
     public Camada camadaOculta;
     public Camada camadaSaida;
     public double taxaDeAprendizado;
+
+    //Construtor vazio para utilizacao nos testes
+    public MLP(){}
 
     //Sao inicializadas as camadas, chamando os construtores dos neuronios, onde sao inicializados os pesos
     public MLP(int neuroniosCamadaOculta, double taxaDeAprendizado) {
@@ -51,7 +52,6 @@ public class MLP {
         return saida;
     }
 
-
     public int retornaRotulo(int[] saida) {
         int rotulo = -1;
         for (int i = 0; i < saida.length; i++)
@@ -62,114 +62,17 @@ public class MLP {
         return rotulo;
     }
 
-
-    public void ajustaPesosCamadaSaida(int esperado, int saida) {
-        for (int i = 0; i < camadaSaida.tamanhoCamada; i++) {
-            for (int j = 0; j < camadaOculta.tamanhoCamada; j++) {
-                double delta = taxaDeAprendizado * camadaSaida.neuronios[i].ultimo_erro * camadaOculta.neuronios[i].saida;
-
-                double buffer = camadaSaida.neuronios[i].pesos[j]; //APENAS PARA TESTES!!
-//                System.out.println("Peso original do neuronio de saida "+ i +"("+ j +")"+" = "+ camadaSaida.neuronios[i].pesos[j]);
-
-                camadaSaida.neuronios[i].pesos[j] = camadaSaida.neuronios[i].pesos[j] + delta;
-
-                double somapesos = 0;
-                for (double d : camadaSaida.neuronios[i].pesos) {
-                    somapesos += d;
-                }
-                camadaSaida.neuronios[i].pesos[j] = camadaSaida.neuronios[i].pesos[j] / somapesos;
-
-
-//                System.out.println("Peso ajustado do neuronio de saida "+ i +"("+ j +")"+" = "+ (camadaSaida.neuronios[i].pesos[j]));
-//                System.out.println("Ajuste do neuronio de saida "+ i +"("+ j +")"+" = "+ (buffer - camadaSaida.neuronios[i].pesos[j]));
-            }
-//            System.out.println();
-        }
-    }
-
-    public void ajustaPesosCamadaOculta(Double[] entrada) {
-        for (int i = 0; i < camadaOculta.tamanhoCamada; i++) {
-            for (int j = 0; j < TAM_ENTRADA; j++) {
-
-                double delta = taxaDeAprendizado * camadaOculta.neuronios[i].ultimo_erro * entrada[i];//Com uma entrada 0, isso resulta num ajuste de 0
-//                System.out.println("\n\n ENTRADA"+i+" = "+ entrada[i]+"\n\n");
-
-                double buffer = camadaOculta.neuronios[i].pesos[j]; //APENAS PARA TESTES!!
-//                System.out.println("Peso original do neuronio oculto "+ i +"("+ j +")"+" = "+ camadaOculta.neuronios[i].pesos[j]);
-
-                camadaOculta.neuronios[i].pesos[j] = camadaOculta.neuronios[i].pesos[j] + delta;
-
-                double somapesos = 0;
-                for (double d : camadaOculta.neuronios[i].pesos) {
-                    somapesos += d;
-                }
-                camadaOculta.neuronios[i].pesos[j] = camadaOculta.neuronios[i].pesos[j] / somapesos;
-
-//                System.out.println("Peso ajustado do neuronio oculto "+ i +"("+ j +")"+" = "+ (camadaOculta.neuronios[i].pesos[j]));
-//                System.out.println("Ajuste do neuronio oculto "+ i +"("+ j +")"+" = "+ (buffer - camadaOculta.neuronios[i].pesos[j]));
-            }
-//            System.out.println("\n\n\n");
-        }
-    }
-
-
-    public void ajustaPesosCamadaSaidaCM(int esperado, int saida) {
-        for (int i = 0; i < camadaSaida.tamanhoCamada; i++) {
-            for (int j = 0; j < camadaOculta.tamanhoCamada; j++) {
-
-                double delta = taxaDeAprendizado * camadaSaida.neuronios[i].ultimo_erro * camadaOculta.neuronios[i].saida + momentum * camadaSaida.neuronios[i].ultimo_ajuste;
-                camadaSaida.neuronios[i].ultimo_ajuste = delta;
-//                double buffer = camadaSaida.neuronios[i].pesos[j]; //APENAS PARA TESTES!!
-//                System.out.println("Peso original do neuronio de saida "+ i +"("+ j +")"+" = "+ camadaSaida.neuronios[i].pesos[j]);
-
-                camadaSaida.neuronios[i].pesos[j] = camadaSaida.neuronios[i].pesos[j] + delta;
-
-                double somapesos = 0;//Modificar a funcao de normalizacao de pesos
-                for (double d : camadaSaida.neuronios[i].pesos) {
-                    somapesos += d;
-                }
-                camadaSaida.neuronios[i].pesos[j] = camadaSaida.neuronios[i].pesos[j] / somapesos;
-
-
-//                System.out.println("Peso ajustado do neuronio de saida "+ i +"("+ j +")"+" = "+ (camadaSaida.neuronios[i].pesos[j]));
-//                System.out.println("Ajuste do neuronio de saida "+ i +"("+ j +")"+" = "+ (buffer - camadaSaida.neuronios[i].pesos[j]));
-            }
-//            System.out.println();
-        }
-    }
-
-    public void ajustaPesosCamadaOcultaCM(Double[] entrada) {
-        for (int i = 0; i < camadaOculta.tamanhoCamada; i++) {
-            for (int j = 0; j < TAM_ENTRADA; j++) {
-                double delta = taxaDeAprendizado * camadaOculta.neuronios[i].ultimo_erro * entrada[i] + momentum * camadaOculta.neuronios[i].ultimo_ajuste;//Com uma entrada 0, isso resulta num ajuste de 0
-                camadaOculta.neuronios[i].ultimo_ajuste = delta;
-//                System.out.println("\n\n ENTRADA"+i+" = "+ entrada[i]+"\n\n");
-
-//                double buffer = camadaOculta.neuronios[i].pesos[j]; //APENAS PARA TESTES!!
-//                System.out.println("Peso original do neuronio oculto "+ i +"("+ j +")"+" = "+ camadaOculta.neuronios[i].pesos[j]);
-
-                camadaOculta.neuronios[i].pesos[j] = camadaOculta.neuronios[i].pesos[j] + delta;
-
-                double somapesos = 0;
-                for (double d : camadaOculta.neuronios[i].pesos) {
-                    somapesos += d;
-                }
-                camadaOculta.neuronios[i].pesos[j] = camadaOculta.neuronios[i].pesos[j] / somapesos;
-
-//                System.out.println("Peso ajustado do neuronio oculto "+ i +"("+ j +")"+" = "+ (camadaOculta.neuronios[i].pesos[j]));
-//                System.out.println("Ajuste do neuronio oculto "+ i +"("+ j +")"+" = "+ (buffer - camadaOculta.neuronios[i].pesos[j]));
-            }
-//            System.out.println("\n\n\n");
-        }
-    }
-
-    public double derivadaSigmoide(int entrada) { //Isso vai ser usado?
-        return (double) ((1 - Neuronio.sigmoide(entrada)) * Neuronio.sigmoide(entrada));
-    }
-
-    public double calculaErroNeuronioSaida(Neuronio neuronio, double saida, int esperado) {//Seria interessante armazenar esse erro em algum local, pra nao calcular duas vezes
+    public void calculaErroNeuronioSaida(Neuronio neuronio, double saida, int esperado) {//Seria interessante armazenar esse erro em algum local, pra nao calcular duas vezes
         neuronio.ultimo_erro = saida * (1 - saida) * (esperado - saida);
-        return neuronio.ultimo_erro;
+    }
+
+    public void calculaErroNeuronioOculto(Neuronio neuronio, double saida) {//Nao calcula
+        //Somatoria dos erros de saida
+        double somatoriaSaida = 0.0;
+        for (int i = 0; i < camadaSaida.neuronios.length; i++) {
+            somatoriaSaida += (camadaSaida.neuronios[i].ultimo_erro * camadaSaida.neuronios[i].pesos[neuronio.ID]);
+        }
+        neuronio.ultimo_erro = saida * (1 - saida) * somatoriaSaida;
     }
 
     public double calculaErroTotal(List<Exemplo> conjunto, MLP rede) {
@@ -183,13 +86,69 @@ public class MLP {
         return (0.5) * (erro_total); //Acho que isso nao deveria ser uma multiplicacao, soh somatorio
     }
 
-    public double calculaErroNeuronioOculto(Neuronio neuronio, double saida) {//Nao calcula
-        //Somatoria dos erros de saida
-        double somatoriaSaida = 0.0;
-        for (int i = 0; i < camadaSaida.neuronios.length; i++) {
-            somatoriaSaida += (camadaSaida.neuronios[i].ultimo_erro * camadaSaida.neuronios[i].pesos[neuronio.ID]);
+    public void ajustaPesosCamadaSaida(int esperado, int saida) {
+        for (int i = 0; i < camadaSaida.tamanhoCamada; i++) {
+            for (int j = 0; j < camadaOculta.tamanhoCamada; j++) {
+                double delta = taxaDeAprendizado * camadaSaida.neuronios[i].ultimo_erro * camadaOculta.neuronios[i].saida;
+
+                camadaSaida.neuronios[i].pesos[j] = camadaSaida.neuronios[i].pesos[j] + delta;
+
+                //TODO: Modificar e utilizar o metodo de normalizacao de pesos aqui
+                double somapesos = 0;
+                for (double d : camadaSaida.neuronios[i].pesos) {
+                    somapesos += d;
+                }
+                camadaSaida.neuronios[i].pesos[j] = camadaSaida.neuronios[i].pesos[j] / somapesos;
+
+            }
         }
-        neuronio.ultimo_erro = saida * (1 - saida) * somatoriaSaida;
-        return neuronio.ultimo_erro;
+    }//TODO: Verificar necessidade de metodos separados com e sem momentum
+
+    public void ajustaPesosCamadaOculta(Double[] entrada) {
+        for (int i = 0; i < camadaOculta.tamanhoCamada; i++) {
+            for (int j = 0; j < TAM_ENTRADA; j++) {
+
+                double delta = taxaDeAprendizado * camadaOculta.neuronios[i].ultimo_erro * entrada[i];//Com uma entrada 0, isso resulta num ajuste de 0
+
+                camadaOculta.neuronios[i].pesos[j] = camadaOculta.neuronios[i].pesos[j] + delta;
+
+                double somapesos = 0;
+                for (double d : camadaOculta.neuronios[i].pesos) {
+                    somapesos += d;
+                }
+                camadaOculta.neuronios[i].pesos[j] = camadaOculta.neuronios[i].pesos[j] / somapesos;
+
+            }
+        }
+    }
+
+    public void ajustaPesosCamadaSaidaCM(int esperado, int saida) {
+        for (int i = 0; i < camadaSaida.tamanhoCamada; i++) {
+            for (int j = 0; j < camadaOculta.tamanhoCamada; j++) {
+                double delta = taxaDeAprendizado * camadaSaida.neuronios[i].ultimo_erro * camadaOculta.neuronios[i].saida + momentum * camadaSaida.neuronios[i].ultimo_ajuste;
+                camadaSaida.neuronios[i].ultimo_ajuste = delta;
+
+                camadaSaida.neuronios[i].pesos[j] = camadaSaida.neuronios[i].pesos[j] + delta;
+
+                camadaSaida.neuronios[i].normalizaPesos(j);
+            }
+        }
+    }
+
+    public void ajustaPesosCamadaOcultaCM(Double[] entrada) {
+        for (int i = 0; i < camadaOculta.tamanhoCamada; i++) {
+            for (int j = 0; j < TAM_ENTRADA; j++) {
+                double delta = taxaDeAprendizado * camadaOculta.neuronios[i].ultimo_erro * entrada[i] + momentum * camadaOculta.neuronios[i].ultimo_ajuste;//Com uma entrada 0, isso resulta num ajuste de 0
+                camadaOculta.neuronios[i].ultimo_ajuste = delta;
+
+                camadaOculta.neuronios[i].pesos[j] = camadaOculta.neuronios[i].pesos[j] + delta;
+
+                camadaOculta.neuronios[i].normalizaPesos(j);
+            }
+        }
+    }
+
+    public double derivadaSigmoide(int entrada) { //Isso vai ser usado?
+        return (double) ((1 - Neuronio.sigmoide(entrada)) * Neuronio.sigmoide(entrada));
     }
 }

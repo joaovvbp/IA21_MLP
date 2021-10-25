@@ -10,10 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /*
- * todo
- * Passos a serem implementados
- *
- * separar isso em funcoes?
+ * TODO: Passos a serem implementados
  *
  * 1 - Preparar os conjuntos de treinamento, verificacao e teste
  * 2 - Rodar as epocas ate a rede convergir
@@ -25,7 +22,7 @@ import java.util.List;
  * - Verificar o codigo procurando simplificar e conferir se todas as funcoes estao de acordo com o esperado
  */
 
-public class Main { // Refatorar, ou comecar do zero sem este esqueleto
+public class Main {
 
     //Metodo para o processamento de dados e definicao de conjuntos
     public static void preparaDados(String local) {
@@ -54,38 +51,24 @@ public class Main { // Refatorar, ou comecar do zero sem este esqueleto
             for (int j = 0; j < rede.camadaSaida.tamanhoCamada; j++) {
                 if (j == classe_esperada) {
                     rede.calculaErroNeuronioSaida(rede.camadaSaida.neuronios[j], rede.camadaSaida.neuronios[j].saida, 1);
-//                    System.out.println("Erro do neuronio de saida (" + j + ")[Esperado] = " + rede.camadaSaida.neuronios[j].ultimo_erro);
                 } else {
                     rede.calculaErroNeuronioSaida(rede.camadaSaida.neuronios[j], rede.camadaSaida.neuronios[j].saida, 0);
-//                    System.out.println("Erro do neuronio de saida (" + j + ") = " + rede.camadaSaida.neuronios[j].ultimo_erro);
                 }
             }
 
             for (int k = 0; k < rede.camadaOculta.tamanhoCamada; k++) {
                 if (k == classe_esperada) {
                     rede.calculaErroNeuronioOculto(rede.camadaOculta.neuronios[k], rede.camadaOculta.neuronios[k].saida);
-//                    System.out.println("Erro do neuronio oculto (" + k + ")[Esperado] = " + rede.camadaOculta.neuronios[k].ultimo_erro);
                 } else {
                     rede.calculaErroNeuronioOculto(rede.camadaOculta.neuronios[k], rede.camadaOculta.neuronios[k].saida);
-//                    System.out.println("Erro do neuronio oculto (" + k + ") = " + rede.camadaOculta.neuronios[k].ultimo_erro);
                 }
             }
 
-//            System.out.println("\n\n");
-
             rede.ajustaPesosCamadaSaidaCM(classe_esperada, classe_obtida);
-
-//            System.out.println("\n\n");
 
             rede.ajustaPesosCamadaOcultaCM(entrada);
         }
         erro_geral = rede.calculaErroTotal(Holdout.conjTreinamento, rede);
-
-//        System.out.println("15 primeiros pesos do primeiro neuronio oculto: ");
-//        for (int i = 0; i < 10; i++) {
-//            System.out.println(rede.camadaOculta.neuronios[1].pesos[i]);
-//        }
-//        System.out.println();
 
         return erro_geral;
     }
@@ -100,10 +83,11 @@ public class Main { // Refatorar, ou comecar do zero sem este esqueleto
 
     }
 
-    public static void runner(int neuronios_ocultos, double taxa_aprendizado) {
+    public static void runner(int neuronios_ocultos, double taxa_aprendizado, double momentum) {
         MLP rede = new MLP(neuronios_ocultos, taxa_aprendizado);
+        rede.momentum = momentum;
 
-        preparaDados("src/main/resources/optdigits.csv");//Converter para um endereco relativo de acordo com a estrutura do projeto
+        preparaDados("src/main/resources/optdigits.csv");//TODO: Converter para um endereco relativo de acordo com a estrutura do projeto
 
         double erro_da_epoca = 999999;
         int i = 0;
@@ -117,6 +101,7 @@ public class Main { // Refatorar, ou comecar do zero sem este esqueleto
     }
 
     public static void main(String[] args) {
-        runner(35, 0.05);
+        //TODO: Elaborar um loop para conseguir testar diferentes configuracoes de rede de forma automatica, registrando os dados num arquivo CSV
+        runner(35, 0.05, 1.0);
     }
 }
