@@ -5,6 +5,8 @@ import Processamento.Exemplo;
 import Processamento.Holdout;
 import Processamento.ProcessamentoDeArquivo;
 
+import java.io.FileWriter;
+import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -98,6 +100,22 @@ public class Main {
             rede.saidas_da_rede.clear();
             i++;
         } while (erro_da_epoca > 0.5);
+    }
+
+    public static void geraCSV() throws IOException {
+        //TODO: Gerar um CSV com atributos da rede
+        //Pode ser necessário usar o stringbuilder
+        //Armazenar 10 entradas, uma por linha, com todos os dados necessários
+        //Armazenar todos os pesos gerados aleatoriamente em uma unica linha, separados por virgula
+        //Não sei o que mais pode ser necessário manter estático
+
+        FileWriter writer = new FileWriter("test.csv");
+
+        //Aqui preparar e inserir os dados
+        writer.append("");
+
+        writer.flush();
+        writer.close();
     }
 
     public static void main(String[] args) {
