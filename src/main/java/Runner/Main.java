@@ -5,6 +5,7 @@ import Processamento.Exemplo;
 import Processamento.Holdout;
 import Processamento.ProcessamentoDeArquivo;
 
+import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.text.DecimalFormat;
@@ -89,7 +90,7 @@ public class Main {
         MLP rede = new MLP(neuronios_ocultos, taxa_aprendizado);
         rede.momentum = momentum;
 
-        preparaDados("src/main/resources/optdigits.csv");//TODO: Converter para um endereco relativo de acordo com a estrutura do projeto
+        preparaDados("src/main/resources/optdigits.csv");
 
         double erro_da_epoca = 999999;
         int i = 0;
@@ -106,20 +107,71 @@ public class Main {
         //TODO: Gerar um CSV com atributos da rede
         //Pode ser necessário usar o stringbuilder
         //Armazenar 10 entradas, uma por linha, com todos os dados necessários
-        //Armazenar todos os pesos gerados aleatoriamente em uma unica linha, separados por virgula
+        //Armazenar todos os pesos gerados aleatoriamente para ser inicializados como vetor: { 1, 2, 3, n-1, n};
+        //Este ultimo passo depende da quantidade de neuronios na intermediaria, acho que vou fazer com 30
         //Não sei o que mais pode ser necessário manter estático
+        BufferedWriter writer = new BufferedWriter(new FileWriter("src/main/resources/test_data.txt", true));
 
-        FileWriter writer = new FileWriter("test.csv");
+        //Preparando os dados para escrita
+        preparaDados("src/main/resources/optdigits.csv");
 
-        //Aqui preparar e inserir os dados
-        writer.append("");
+        for (int i = 0; i < 10; i++) {//Guardando as entradas
+            Double[] entrada = Holdout.conjTreinamento.get(i).vetorEntradas;
+            writer.append("double[] entrada"+i+" = new double[]{");
+            for (int j = 0; j < entrada.length; j++) {
+                if (j == entrada.length - 1) {
+                    writer.append(entrada[i].toString()+"};");
+                }
+                else{
+                    writer.append(entrada[i].toString()+", ");
+                }
+            }
+            writer.append("\n");
+        }
 
-        writer.flush();
+        writer.append("\n");
+
+        //Criando uma rede
+        MLP rede = new MLP(30, 0.001){};
+
+        writer.append("\nOculta: \n");
+
+        for (int i = 0; i < rede.camadaOculta.neuronios.length; i++) {
+            writer.append("rede.camadaOculta.neuronios["+i+"].pesos = new double[]{");
+            for (int j = 0; j <  rede.camadaOculta.neuronios[i].pesos.length; j++) {
+                if (j == rede.camadaOculta.neuronios[i].pesos.length - 1) {
+                    writer.append(rede.camadaOculta.neuronios[i].pesos[j]+"};");
+                }
+                else{
+                    writer.append(rede.camadaOculta.neuronios[i].pesos[j]+", ");
+                }
+            }
+            writer.append("\n");
+        }
+
+        writer.append("\nSaida: \n");
+
+        for (int i = 0; i < rede.camadaSaida.neuronios.length; i++) {
+            writer.append("rede.camadaSaida.neuronios["+i+"].pesos = new double[]{");
+            for (int j = 0; j <  rede.camadaSaida.neuronios[i].pesos.length; j++) {
+                if (j == rede.camadaSaida.neuronios[i].pesos.length - 1) {
+                    writer.append(rede.camadaSaida.neuronios[i].pesos[j]+"};");
+                }
+                else{
+                    writer.append(rede.camadaSaida.neuronios[i].pesos[j]+", ");
+                }
+            }
+            writer.append("\n");
+        }
+
+        writer.append("\ndouble taxa_de_aprendizado = "+rede.taxaDeAprendizado+";");
+
         writer.close();
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         //TODO: Elaborar um loop para conseguir testar diferentes configuracoes de rede de forma automatica, registrando os dados num arquivo CSV
-        runner(35, 0.05, 1.0);
+//        runner(35, 0.05, 1.0);
+        geraCSV();
     }
 }
