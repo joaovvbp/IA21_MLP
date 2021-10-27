@@ -7,7 +7,7 @@ import Processamento.ProcessamentoDeArquivo;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
-
+import java.util.Random;
 /*
  * TODO: Passos a serem implementados
  *
@@ -42,8 +42,6 @@ public class Main {
             int classe_esperada = Holdout.conjTreinamento.get(i).retornaRotulo();
 
             rede.forwardPropagation(entrada, rede);
-
-            rede.saidas_da_rede.add(rede.converteSaida(rede.camadaSaida));
 
             int classe_obtida = rede.retornaRotulo(rede.converteSaida(rede.camadaSaida));
 
@@ -82,27 +80,35 @@ public class Main {
 
     }
 
-    public static void runner(int neuronios_ocultos, double taxa_aprendizado, double momentum) {
+    public static void runner(int neuronios_ocultos, double taxa_aprendizado, double momentum, int num_epocas) throws IOException {
+        Random random = new Random();
+        BufferedWriter writer = new BufferedWriter(new FileWriter("src/main/resources/test_data_ID"+random.nextInt(100)+".txt", true));
         MLP rede = new MLP(neuronios_ocultos, taxa_aprendizado);
         rede.momentum = momentum;
 
         preparaDados("src/main/resources/optdigits.csv");
 
-        double erro_da_epoca = 999999;
+        writer.append("Tamanho do conjunto de treinamento: ").append(String.valueOf(Holdout.conjTreinamento.size())).append("\n");
+        writer.append("Configs da rede: ").append(String.valueOf(neuronios_ocultos)).append(", ").append(String.valueOf(taxa_aprendizado)).append(", ").append(String.valueOf(momentum)).append(", ").append(String.valueOf(num_epocas)).append("\n\n");
+
+        double erro_da_epoca = -1;
         int i = 0;
         do {
             erro_da_epoca = treinaRede(rede);
 
             if(i % 100 == 0){
-                System.out.println("Erro da epoca " + i + " = " + erro_da_epoca);
+                System.out.println("Epoca["+i+"] = "+erro_da_epoca);
+                writer.append("epocas[").append(String.valueOf(i)).append("] = ").append(String.valueOf(erro_da_epoca)).append(";\n");
             }
 
             i++;
-        } while (erro_da_epoca > 1000);
+        } while (i <= num_epocas);
+        writer.close();
     }
 
     public static void main(String[] args) throws IOException {
         //TODO: Elaborar um loop para conseguir testar diferentes configuracoes de rede de forma automatica, registrando os dados num arquivo CSV
-        runner(30, 0.01, 0.0);
+        //TODO: A rede nao converge, pode ser um problema no calculo e ajuste dos erros (independentes do erro geral)
+        runner(20, 0.001, 0.3, 10000);
     }
 }

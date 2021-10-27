@@ -17,7 +17,8 @@ public class MLP {
     public double taxaDeAprendizado;
 
     //Construtor vazio para utilizacao nos testes
-    public MLP(){}
+    public MLP() {
+    }
 
     //Sao inicializadas as camadas, chamando os construtores dos neuronios, onde sao inicializados os pesos
     public MLP(int neuroniosCamadaOculta, double taxaDeAprendizado) {
@@ -69,7 +70,7 @@ public class MLP {
     public void calculaErroNeuronioOculto(Neuronio neuronio, double saida) {//Nao calcula
         //Somatoria dos erros de saida
         double somatoriaSaida = 0.0;
-        for (int i = 0; i < camadaSaida.neuronios.length; i++) {
+        for (int i = 0; i < TAM_SAIDA; i++) {
             somatoriaSaida += (camadaSaida.neuronios[i].ultimo_erro * camadaSaida.neuronios[i].pesos[neuronio.ID]);
         }
         neuronio.ultimo_erro = saida * (1 - saida) * somatoriaSaida;
@@ -81,10 +82,9 @@ public class MLP {
         for (int i = 0; i < conjunto.size() - 1; i++) {
             int o_esperado = conjunto.get(i).retornaRotulo();
             for (int j = 0; j < TAM_SAIDA; j++) {
-                if (o_esperado == j){
+                if (o_esperado == j) {
                     somatorio_saidas += Math.pow((1 - camadaSaida.neuronios[j].saida), 2);
-                }
-                else{
+                } else {
                     somatorio_saidas += Math.pow((0 - camadaSaida.neuronios[j].saida), 2);
                 }
             }
@@ -95,15 +95,14 @@ public class MLP {
     }
 
     public void ajustaPesosCamadaSaida() {
-        for (int i = 0; i < camadaSaida.tamanhoCamada; i++) {
+        for (int i = 0; i < TAM_SAIDA; i++) {
             for (int j = 0; j < camadaOculta.tamanhoCamada; j++) {
                 double delta = taxaDeAprendizado * camadaSaida.neuronios[i].ultimo_erro * camadaOculta.neuronios[i].saida + momentum * camadaSaida.neuronios[i].ultimo_ajuste;
                 camadaSaida.neuronios[i].ultimo_ajuste = delta;
 
                 camadaSaida.neuronios[i].pesos[j] = camadaSaida.neuronios[i].pesos[j] + delta;
-
-                camadaSaida.neuronios[i].normalizaPesos(j);
             }
+            camadaSaida.neuronios[i].normalizaPesos();
         }
     }
 
@@ -115,8 +114,8 @@ public class MLP {
 
                 camadaOculta.neuronios[i].pesos[j] = camadaOculta.neuronios[i].pesos[j] + delta;
 
-                camadaOculta.neuronios[i].normalizaPesos(j);
             }
+            camadaOculta.neuronios[i].normalizaPesos();
         }
     }
 

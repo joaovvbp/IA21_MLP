@@ -30,12 +30,14 @@ public class Neuronio {
         }
     }
 
-    public void normalizaPesos(int index) {
+    public void normalizaPesos() {
         double somapesos = 0;
         for (double d : pesos) {
             somapesos += d;
         }
-        pesos[index] = pesos[index] / somapesos;
+        for (int i = 0; i < pesos.length; i++) {
+            pesos[i] = pesos[i] / somapesos;
+        }
     }
 
     public void somaPonderadaOculta(Double[] entrada) {
