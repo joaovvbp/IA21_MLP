@@ -76,17 +76,25 @@ public class MLP {
     }
 
     public double calculaErroTotal(List<Exemplo> conjunto, MLP rede) {
-        // 1/2 * somatoria de e exemplos * ( somatoria de k saidas * (saida esperada de k - saida obtida de k)**2)
-        double erro_total = 0;
+        double somatorio_saidas = 0;
+        double somatorio_exemplos = 0;
         for (int i = 0; i < conjunto.size() - 1; i++) {
-            erro_total += Math.pow(conjunto.get(i).retornaRotulo() - retornaRotulo(rede.saidas_da_rede.get(i)), 2);
-//            System.out.println("Erro total na iteracao("+i+") = "+ erro_total);
+            int o_esperado = conjunto.get(i).retornaRotulo();
+            for (int j = 0; j < TAM_SAIDA; j++) {
+                if (o_esperado == j){
+                    somatorio_saidas += Math.pow((1 - camadaSaida.neuronios[j].saida), 2);
+                }
+                else{
+                    somatorio_saidas += Math.pow((0 - camadaSaida.neuronios[j].saida), 2);
+                }
+            }
+            somatorio_exemplos += somatorio_saidas;
+            somatorio_saidas = 0;
         }
-//        System.out.println("\n"+(0.5) * conjunto.size() * (erro_total));
-        return (0.5) * (erro_total); //Acho que isso nao deveria ser uma multiplicacao, soh somatorio
+        return (0.5) * (somatorio_exemplos); //Acho que isso nao deveria ser uma multiplicacao, soh somatorio
     }
 
-    public void ajustaPesosCamadaSaida(int esperado, int saida) {
+    public void ajustaPesosCamadaSaida() {
         for (int i = 0; i < camadaSaida.tamanhoCamada; i++) {
             for (int j = 0; j < camadaOculta.tamanhoCamada; j++) {
                 double delta = taxaDeAprendizado * camadaSaida.neuronios[i].ultimo_erro * camadaOculta.neuronios[i].saida + momentum * camadaSaida.neuronios[i].ultimo_ajuste;

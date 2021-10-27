@@ -63,7 +63,7 @@ public class Main {
                 }
             }
 
-            rede.ajustaPesosCamadaSaida(classe_esperada, classe_obtida);//TODO: Verificar
+            rede.ajustaPesosCamadaSaida();//TODO: Verificar
 
             rede.ajustaPesosCamadaOculta(entrada);//TODO: Verificar
         }
@@ -92,15 +92,17 @@ public class Main {
         int i = 0;
         do {
             erro_da_epoca = treinaRede(rede);
-            System.out.println("Erro da epoca " + i + " = " + erro_da_epoca);
 
-            rede.saidas_da_rede.clear();
+            if(i % 100 == 0){
+                System.out.println("Erro da epoca " + i + " = " + erro_da_epoca);
+            }
+
             i++;
-        } while (erro_da_epoca > 0.5);
+        } while (erro_da_epoca > 1000);
     }
 
     public static void main(String[] args) throws IOException {
         //TODO: Elaborar um loop para conseguir testar diferentes configuracoes de rede de forma automatica, registrando os dados num arquivo CSV
-        runner(35, 0.05, 1.0);
+        runner(30, 0.01, 0.0);
     }
 }
