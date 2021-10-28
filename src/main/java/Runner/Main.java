@@ -43,8 +43,6 @@ public class Main {
 
             rede.forwardPropagation(entrada, rede);
 
-            int classe_obtida = rede.retornaRotulo(rede.converteSaida(rede.camadaSaida));
-
             for (int j = 0; j < rede.camadaSaida.tamanhoCamada; j++) {
                 if (j == classe_esperada) {
                     rede.calculaErroNeuronioSaida(rede.camadaSaida.neuronios[j], rede.camadaSaida.neuronios[j].saida, 1);//TODO: Verificar
@@ -64,6 +62,14 @@ public class Main {
             rede.ajustaPesosCamadaSaida();//TODO: Verificar
 
             rede.ajustaPesosCamadaOculta(entrada);//TODO: Verificar
+
+            for (int j = 0; j < rede.camadaSaida.neuronios.length; j++) {
+                rede.camadaSaida.neuronios[j].normalizaPesos();
+            }
+
+            for (int j = 0; j < rede.camadaOculta.neuronios.length; j++) {
+                rede.camadaOculta.neuronios[j].normalizaPesos();
+            }
         }
         erro_geral = rede.calculaErroTotal(Holdout.conjTreinamento, rede);//TODO: Verificar
 
@@ -93,7 +99,7 @@ public class Main {
 
         double erro_da_epoca = -1;
         int i = 0;
-        do {
+        while (i <= num_epocas){
             erro_da_epoca = treinaRede(rede);
 
             if(i % 100 == 0){
@@ -102,13 +108,18 @@ public class Main {
             }
 
             i++;
-        } while (i <= num_epocas);
+        }
         writer.close();
     }
 
     public static void main(String[] args) throws IOException {
         //TODO: Elaborar um loop para conseguir testar diferentes configuracoes de rede de forma automatica, registrando os dados num arquivo CSV
         //TODO: A rede nao converge, pode ser um problema no calculo e ajuste dos erros (independentes do erro geral)
-        runner(20, 0.001, 0.3, 10000);
+
+        //TODO: Não encontrei divergencias entre as implementações dos métodos e as funções apresentadas pela professora, tudo está de acordo e parece funcionar corretamente
+        //Conferi o cálculo de erro, ajuste dos pesos e a normalização e tudo parecia fazer sentido, vou tentar rodar a rede com essas configurações por mais épocas e ver se observo algo
+        //Não consigo explicar os comportamentos que tenho observado (O mesmo erro por várias épocas, até de repente variar e voltar a repetir) (Apesar de que no geral se observa uma redução)
+        //A primeira época ter um erro extremamente baixo, por algum motivo.
+        runner(30, 0.001, 0.8, 50000);
     }
 }

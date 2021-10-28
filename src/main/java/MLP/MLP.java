@@ -63,7 +63,7 @@ public class MLP {
         return rotulo;
     }
 
-    public void calculaErroNeuronioSaida(Neuronio neuronio, double saida, int esperado) {//Seria interessante armazenar esse erro em algum local, pra nao calcular duas vezes
+    public void calculaErroNeuronioSaida(Neuronio neuronio, double saida, double esperado) {//Seria interessante armazenar esse erro em algum local, pra nao calcular duas vezes
         neuronio.ultimo_erro = saida * (1 - saida) * (esperado - saida);
     }
 
@@ -73,7 +73,7 @@ public class MLP {
         for (int i = 0; i < TAM_SAIDA; i++) {
             somatoriaSaida += (camadaSaida.neuronios[i].ultimo_erro * camadaSaida.neuronios[i].pesos[neuronio.ID]);
         }
-        neuronio.ultimo_erro = saida * (1 - saida) * somatoriaSaida;
+        neuronio.ultimo_erro = saida * ((1 - saida) * somatoriaSaida);
     }
 
     public double calculaErroTotal(List<Exemplo> conjunto, MLP rede) {
@@ -91,7 +91,7 @@ public class MLP {
             somatorio_exemplos += somatorio_saidas;
             somatorio_saidas = 0;
         }
-        return (0.5) * (somatorio_exemplos); //Acho que isso nao deveria ser uma multiplicacao, soh somatorio
+        return (0.5) * (somatorio_exemplos);
     }
 
     public void ajustaPesosCamadaSaida() {
@@ -101,8 +101,8 @@ public class MLP {
                 camadaSaida.neuronios[i].ultimo_ajuste = delta;
 
                 camadaSaida.neuronios[i].pesos[j] = camadaSaida.neuronios[i].pesos[j] + delta;
+
             }
-            camadaSaida.neuronios[i].normalizaPesos();
         }
     }
 
@@ -115,11 +115,6 @@ public class MLP {
                 camadaOculta.neuronios[i].pesos[j] = camadaOculta.neuronios[i].pesos[j] + delta;
 
             }
-            camadaOculta.neuronios[i].normalizaPesos();
         }
-    }
-
-    public double derivadaSigmoide(int entrada) { //Isso vai ser usado?
-        return (double) ((1 - Neuronio.sigmoide(entrada)) * Neuronio.sigmoide(entrada));
     }
 }
