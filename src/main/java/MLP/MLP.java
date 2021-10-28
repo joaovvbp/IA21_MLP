@@ -16,10 +16,6 @@ public class MLP {
     public Camada camadaSaida;
     public double taxaDeAprendizado;
 
-    //Construtor vazio para utilizacao nos testes
-    public MLP() {
-    }
-
     //Sao inicializadas as camadas, chamando os construtores dos neuronios, onde sao inicializados os pesos
     public MLP(int neuroniosCamadaOculta, double taxaDeAprendizado) {
         this.taxaDeAprendizado = taxaDeAprendizado;

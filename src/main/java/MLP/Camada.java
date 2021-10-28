@@ -4,9 +4,6 @@ public class Camada {
     public Neuronio[] neuronios;
     public int tamanhoCamada;
 
-    //Construtor vazio para utilizacao nos testes
-    public Camada(){}
-
     public Camada(int tamanhoCamada, int tamanhoCamadaAnterior){
         this.tamanhoCamada = tamanhoCamada;
         neuronios = new Neuronio[tamanhoCamada];

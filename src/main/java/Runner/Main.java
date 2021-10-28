@@ -64,15 +64,8 @@ public class Main {
 
             rede.ajustaPesosCamadaOculta(entrada);//TODO: Verificar
 
-            for (int j = 0; j < rede.camadaSaida.neuronios.length; j++) {
-                rede.camadaSaida.neuronios[j].normalizaPesos();
-            }
-
-            for (int j = 0; j < rede.camadaOculta.neuronios.length; j++) {
-                rede.camadaOculta.neuronios[j].normalizaPesos();
-            }
         }
-        erro_geral = rede.calculaErroTotal(Holdout.conjTreinamento, rede);//TODO: Verificar
+        erro_geral = rede.calculaErroTotal(Holdout.conjTreinamento);//TODO: Verificar
 
         return erro_geral;
     }
@@ -133,6 +126,6 @@ public class Main {
         //Conferi o cálculo de erro, ajuste dos pesos e a normalização e tudo parecia fazer sentido, vou tentar rodar a rede com essas configurações por mais épocas e ver se observo algo
         //Não consigo explicar os comportamentos que tenho observado (O mesmo erro por várias épocas, até de repente variar e voltar a repetir) (Apesar de que no geral se observa uma redução)
         //A primeira época ter um erro extremamente baixo, por algum motivo.
-        runner(30, 0.001, 0.8, 700);
+        runner(20, 0.0001, 0.001, 10000);
     }
 }
