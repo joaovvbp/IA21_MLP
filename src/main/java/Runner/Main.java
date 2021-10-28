@@ -83,9 +83,7 @@ public class Main {
             System.out.println("Esperado: "+Holdout.conjTeste.get(i).retornaRotulo());
 
             int[] saida = rede.converteSaida(rede.camadaSaida);
-            int j = 0;
-            for (; j < 10; j++) if(saida[j] == 1) break;
-            System.out.println("Obtido: " +saida[j]);
+            System.out.println("Obtido: "+rede.retornaRotulo(saida));
         }
     }
 
@@ -126,6 +124,8 @@ public class Main {
         //Conferi o cálculo de erro, ajuste dos pesos e a normalização e tudo parecia fazer sentido, vou tentar rodar a rede com essas configurações por mais épocas e ver se observo algo
         //Não consigo explicar os comportamentos que tenho observado (O mesmo erro por várias épocas, até de repente variar e voltar a repetir) (Apesar de que no geral se observa uma redução)
         //A primeira época ter um erro extremamente baixo, por algum motivo.
-        runner(30, 0.001, 0.1, 10000);
+        for (double i = 0; i < 0.9; i = (int) (i + 0.3)) {
+            runner(30, 0.00000001, i, 100000);
+        }
     }
 }
