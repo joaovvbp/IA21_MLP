@@ -7,6 +7,7 @@ import Processamento.ProcessamentoDeArquivo;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Random;
 /*
  * TODO: Passos a serem implementados
@@ -82,8 +83,17 @@ public class Main {
     }
 
     //Metodo para a etapa de testes
-    public static void testaRede() {
+    public static void testaRede(MLP rede) {
+        for (int i = 0; i < Holdout.conjTeste.size(); i++) {
+            Double[] entrada = Holdout.conjTeste.get(i).vetorEntradas;
+            rede.forwardPropagation(entrada, rede);
+            System.out.println("Esperado: "+Holdout.conjTeste.get(i).retornaRotulo());
 
+            int[] saida = rede.converteSaida(rede.camadaSaida);
+            int j = 0;
+            for (; j < 10; j++) if(saida[j] == 1) break;
+            System.out.println("Obtido: " +saida[j]);
+        }
     }
 
     public static void runner(int neuronios_ocultos, double taxa_aprendizado, double momentum, int num_epocas) throws IOException {
@@ -109,6 +119,9 @@ public class Main {
 
             i++;
         }
+
+        testaRede(rede);
+
         writer.close();
     }
 
@@ -120,6 +133,6 @@ public class Main {
         //Conferi o cálculo de erro, ajuste dos pesos e a normalização e tudo parecia fazer sentido, vou tentar rodar a rede com essas configurações por mais épocas e ver se observo algo
         //Não consigo explicar os comportamentos que tenho observado (O mesmo erro por várias épocas, até de repente variar e voltar a repetir) (Apesar de que no geral se observa uma redução)
         //A primeira época ter um erro extremamente baixo, por algum motivo.
-        runner(30, 0.001, 0.8, 50000);
+        runner(30, 0.001, 0.8, 700);
     }
 }
