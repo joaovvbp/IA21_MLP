@@ -76,7 +76,7 @@ public class MLP {
         neuronio.ultimo_erro = saida * ((1 - saida) * somatoriaSaida);
     }
 
-    public double calculaErroTotal(List<Exemplo> conjunto, MLP rede) {
+    public double calculaErroTotal(List<Exemplo> conjunto) {
         double somatorio_saidas = 0;
         double somatorio_exemplos = 0;
         for (int i = 0; i < conjunto.size() - 1; i++) {
@@ -102,7 +102,7 @@ public class MLP {
 
                 camadaSaida.neuronios[i].pesos[j] = camadaSaida.neuronios[i].pesos[j] + delta;
             }
-            //camadaSaida.neuronios[i].normalizaPesos();
+            camadaSaida.neuronios[i].normalizaPesos();
         }
     }
 
@@ -113,9 +113,8 @@ public class MLP {
                 camadaOculta.neuronios[i].ultimo_ajuste = delta;
 
                 camadaOculta.neuronios[i].pesos[j] = camadaOculta.neuronios[i].pesos[j] + delta;
-
             }
-            //camadaOculta.neuronios[i].normalizaPesos();
+            camadaOculta.neuronios[i].normalizaPesos();
         }
     }
 

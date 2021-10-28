@@ -32,8 +32,8 @@ public class Neuronio {
 
     public void normalizaPesos() {
         double somapesos = 0;
-        for (int i = 0; i < pesos.length; i++) {
-            somapesos += pesos[i];
+        for (double peso : pesos) {
+            somapesos += peso;
         }
         for (int i = 0; i < pesos.length; i++) {
             pesos[i] = pesos[i] / somapesos;
@@ -57,6 +57,6 @@ public class Neuronio {
     }
 
     public static double sigmoide(double somaponderadaDoNeuronio) {
-        return 1 / (1 + exp(somaponderadaDoNeuronio));
+        return 1 / (1 + exp((-1 * somaponderadaDoNeuronio)));
     }
 }
