@@ -76,20 +76,84 @@ public class Main {
     }
 
     //Metodo para a etapa de testes
-    public static void testaRede(MLP rede) {
+    public static void testaRede(MLP rede, String local, double erro_total) throws IOException {
+        //Matriz de confusao
+        BufferedWriter writer = new BufferedWriter(new FileWriter(local, true));
+
+        int matriz_confusao[][] = new int[10][10];
+
         for (int i = 0; i < Holdout.conjTeste.size(); i++) {
             Double[] entrada = Holdout.conjTeste.get(i).vetorEntradas;
-            rede.forwardPropagation(entrada, rede);
-            System.out.println("Esperado: "+Holdout.conjTeste.get(i).retornaRotulo());
 
+            rede.forwardPropagation(entrada, rede);
             int[] saida = rede.converteSaida(rede.camadaSaida);
-            System.out.println("Obtido: "+rede.retornaRotulo(saida));
+
+            int esperado = Holdout.conjTeste.get(i).retornaRotulo();
+            int obtido = rede.retornaRotulo(saida);
+
+            matriz_confusao[esperado][obtido] += 1;
         }
+
+//        for (int i = 0; i < 10; i++) { //Imprime ou armazena como um array
+//            for (int j = 0; j < 10; j++) {
+//                if (i == 0 && j == 0) {
+//                    System.out.print("{{ " + matriz_confusao[i][j] + ", ");
+//                    writer.append("{{ " + matriz_confusao[i][j] + ", ");
+//                } else if (i != 0 && j == 0) {
+//                    System.out.print("{ " + matriz_confusao[i][j] + ", ");
+//                    writer.append("{ " + matriz_confusao[i][j] + ", ");
+//                } else if (i==9 && j == 9) {
+//                    System.out.print(matriz_confusao[i][j] + "}}\n");
+//                    writer.append(+matriz_confusao[i][j] + "}}\n");
+//                } else if (j == 9) {
+//                    System.out.print(matriz_confusao[i][j] + "}\n");
+//                    writer.append(+matriz_confusao[i][j] + "}\n");
+//                } else {
+//                    System.out.print(matriz_confusao[i][j] + ", ");
+//                    writer.append(matriz_confusao[i][j] + ", ");
+//                }
+//            }
+//        }
+
+        for (int i = 0; i < 10; i++) { //Imprime ou armazena como csv
+            if (i == 0){
+                System.out.print((int)erro_total+", ");
+                writer.append((int)erro_total+", ");
+                for (int j = 0; j < 10; j++) {
+                    if (j == 9) {
+                        System.out.print(j);
+                        writer.append(j+"");
+                    } else {
+                        System.out.print(j + ", ");
+                        writer.append(j + ", ");
+                    }
+                }
+                System.out.println();
+                writer.append("\n");
+            }
+            System.out.print(i +", ");
+            writer.append(i +", ");
+            for (int j = 0; j < 10; j++) {
+                //System.out.print(j +", ");
+                if (j == 9) {
+                    System.out.print(matriz_confusao[i][j]);
+                    writer.append(matriz_confusao[i][j]+"");
+                } else {
+                    System.out.print(matriz_confusao[i][j] + ", ");
+                    writer.append(matriz_confusao[i][j] + ", ");
+                }
+            }
+            System.out.println();
+            writer.append("\n");
+        }
+        writer.append("\n");
+        writer.close();
     }
 
     public static void runner(int neuronios_ocultos, double taxa_aprendizado, double momentum, int num_epocas) throws IOException {
         Random random = new Random();
-        BufferedWriter writer = new BufferedWriter(new FileWriter("src/main/resources/test_data_ID"+random.nextInt(100)+".txt", true));
+        String local = "src/main/resources/test_data_ID" + random.nextInt(100) + ".txt";
+        BufferedWriter writer = new BufferedWriter(new FileWriter(local, true));
         MLP rede = new MLP(neuronios_ocultos, taxa_aprendizado);
         rede.momentum = momentum;
 
@@ -98,20 +162,22 @@ public class Main {
         writer.append("Tamanho do conjunto de treinamento: ").append(String.valueOf(Holdout.conjTreinamento.size())).append("\n");
         writer.append("Configs da rede: ").append(String.valueOf(neuronios_ocultos)).append(", ").append(String.valueOf(taxa_aprendizado)).append(", ").append(String.valueOf(momentum)).append(", ").append(String.valueOf(num_epocas)).append("\n\n");
 
+        System.out.println(neuronios_ocultos + ", " + taxa_aprendizado + ", " + momentum + ", " + num_epocas);
+
         double erro_da_epoca = -1;
         int i = 0;
-        while (i <= num_epocas){
+        while (i <= num_epocas) {
             erro_da_epoca = treinaRede(rede);
 
-            if(i % 100 == 0){
-                System.out.println("Epoca["+i+"] = "+erro_da_epoca);
-                writer.append("epocas[").append(String.valueOf(i)).append("] = ").append(String.valueOf(erro_da_epoca)).append(";\n");
+            if (i % 1000 == 0) {
+                System.out.println("E[" + i + "] = " + erro_da_epoca);
+                writer.append("E[").append(String.valueOf(i)).append("] = ").append(String.valueOf(erro_da_epoca)).append(";\n");
             }
 
             i++;
         }
 
-        testaRede(rede);
+        testaRede(rede, local,erro_da_epoca);
 
         writer.close();
     }
@@ -124,8 +190,6 @@ public class Main {
         //Conferi o cálculo de erro, ajuste dos pesos e a normalização e tudo parecia fazer sentido, vou tentar rodar a rede com essas configurações por mais épocas e ver se observo algo
         //Não consigo explicar os comportamentos que tenho observado (O mesmo erro por várias épocas, até de repente variar e voltar a repetir) (Apesar de que no geral se observa uma redução)
         //A primeira época ter um erro extremamente baixo, por algum motivo.
-        for (double i = 0; i < 0.9; i = (int) (i + 0.3)) {
-            runner(30, 0.00000001, i, 100000);
-        }
+        runner(30, 1.0E-7, 0.01, 200000);
     }
 }
