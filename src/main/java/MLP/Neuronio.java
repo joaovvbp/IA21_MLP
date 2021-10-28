@@ -32,8 +32,8 @@ public class Neuronio {
 
     public void normalizaPesos() {
         double somapesos = 0;
-        for (double d : pesos) {
-            somapesos += d;
+        for (int i = 0; i < pesos.length; i++) {
+            somapesos += pesos[i];
         }
         for (int i = 0; i < pesos.length; i++) {
             pesos[i] = pesos[i] / somapesos;

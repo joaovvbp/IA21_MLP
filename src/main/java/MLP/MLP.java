@@ -101,8 +101,8 @@ public class MLP {
                 camadaSaida.neuronios[i].ultimo_ajuste = delta;
 
                 camadaSaida.neuronios[i].pesos[j] = camadaSaida.neuronios[i].pesos[j] + delta;
-
             }
+            //camadaSaida.neuronios[i].normalizaPesos();
         }
     }
 
@@ -115,6 +115,8 @@ public class MLP {
                 camadaOculta.neuronios[i].pesos[j] = camadaOculta.neuronios[i].pesos[j] + delta;
 
             }
+            //camadaOculta.neuronios[i].normalizaPesos();
         }
     }
+
 }
