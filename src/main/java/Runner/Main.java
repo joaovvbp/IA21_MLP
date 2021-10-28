@@ -126,6 +126,6 @@ public class Main {
         //Conferi o cálculo de erro, ajuste dos pesos e a normalização e tudo parecia fazer sentido, vou tentar rodar a rede com essas configurações por mais épocas e ver se observo algo
         //Não consigo explicar os comportamentos que tenho observado (O mesmo erro por várias épocas, até de repente variar e voltar a repetir) (Apesar de que no geral se observa uma redução)
         //A primeira época ter um erro extremamente baixo, por algum motivo.
-        runner(20, 0.0001, 0.001, 10000);
+        runner(30, 0.001, 0.1, 10000);
     }
 }

@@ -10,8 +10,6 @@ public class MLP {
     final int TAM_SAIDA = 10;
     public double momentum;
 
-    public List<int[]> saidas_da_rede = new ArrayList<>();
-
     public Camada camadaOculta;
     public Camada camadaSaida;
     public double taxaDeAprendizado;
@@ -93,8 +91,8 @@ public class MLP {
     public void ajustaPesosCamadaSaida() {
         for (int i = 0; i < TAM_SAIDA; i++) {
             for (int j = 0; j < camadaOculta.tamanhoCamada; j++) {
-                double delta = taxaDeAprendizado * camadaSaida.neuronios[i].ultimo_erro * camadaOculta.neuronios[i].saida + momentum * camadaSaida.neuronios[i].ultimo_ajuste;
-                camadaSaida.neuronios[i].ultimo_ajuste = delta;
+                double delta = taxaDeAprendizado * camadaSaida.neuronios[i].ultimo_erro * camadaOculta.neuronios[i].saida + momentum * camadaSaida.neuronios[i].ultimo_ajuste[j];
+                camadaSaida.neuronios[i].ultimo_ajuste[j] = delta;
 
                 camadaSaida.neuronios[i].pesos[j] = camadaSaida.neuronios[i].pesos[j] + delta;
             }
@@ -105,8 +103,8 @@ public class MLP {
     public void ajustaPesosCamadaOculta(Double[] entrada) {
         for (int i = 0; i < camadaOculta.tamanhoCamada; i++) {
             for (int j = 0; j < TAM_ENTRADA; j++) {
-                double delta = taxaDeAprendizado * camadaOculta.neuronios[i].ultimo_erro * entrada[i] + momentum * camadaOculta.neuronios[i].ultimo_ajuste;//Com uma entrada 0, isso resulta num ajuste de 0
-                camadaOculta.neuronios[i].ultimo_ajuste = delta;
+                double delta = taxaDeAprendizado * camadaOculta.neuronios[i].ultimo_erro * entrada[i] + momentum * camadaOculta.neuronios[i].ultimo_ajuste[j];//Com uma entrada 0, isso resulta num ajuste de 0
+                camadaOculta.neuronios[i].ultimo_ajuste[j] = delta;
 
                 camadaOculta.neuronios[i].pesos[j] = camadaOculta.neuronios[i].pesos[j] + delta;
             }

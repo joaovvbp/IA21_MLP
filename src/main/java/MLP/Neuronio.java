@@ -14,14 +14,12 @@ public class Neuronio {
     public double[] pesos;
 
     public double ultimo_erro;
-    public double ultimo_ajuste = 0.0;
-
-    //Construtor vazio para utilizacao nos testes
-    public Neuronio(){}
+    public double[] ultimo_ajuste;
 
     public Neuronio(int pesosRecebidos, int ID) {
         this.ID = ID;
         pesos = new double[pesosRecebidos];
+        ultimo_ajuste = new double[pesosRecebidos];
     }
 
     public void inicializaPesos() {
