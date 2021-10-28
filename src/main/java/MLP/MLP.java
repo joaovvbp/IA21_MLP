@@ -89,9 +89,12 @@ public class MLP {
     }
 
     public void ajustaPesosCamadaSaida() {
+
         for (int i = 0; i < TAM_SAIDA; i++) {
+            double delta = 0;
             for (int j = 0; j < camadaOculta.tamanhoCamada; j++) {
-                double delta = taxaDeAprendizado * camadaSaida.neuronios[i].ultimo_erro * camadaOculta.neuronios[i].saida + momentum * camadaSaida.neuronios[i].ultimo_ajuste[j];
+                delta = taxaDeAprendizado * camadaSaida.neuronios[i].ultimo_erro * camadaOculta.neuronios[j].saida + momentum * camadaSaida.neuronios[i].ultimo_ajuste[j];
+                //Alterei o ultimo ajuste pra representar o ajuste de cada peso, tambem alterei o indice do parametro correspondente ao Xij na funcao
                 camadaSaida.neuronios[i].ultimo_ajuste[j] = delta;
 
                 camadaSaida.neuronios[i].pesos[j] = camadaSaida.neuronios[i].pesos[j] + delta;
@@ -101,9 +104,11 @@ public class MLP {
     }
 
     public void ajustaPesosCamadaOculta(Double[] entrada) {
+
         for (int i = 0; i < camadaOculta.tamanhoCamada; i++) {
+            double delta = 0;
             for (int j = 0; j < TAM_ENTRADA; j++) {
-                double delta = taxaDeAprendizado * camadaOculta.neuronios[i].ultimo_erro * entrada[i] + momentum * camadaOculta.neuronios[i].ultimo_ajuste[j];//Com uma entrada 0, isso resulta num ajuste de 0
+                delta = taxaDeAprendizado * camadaOculta.neuronios[i].ultimo_erro * entrada[j] + momentum * camadaOculta.neuronios[i].ultimo_ajuste[j];//Com uma entrada 0, isso resulta num ajuste de 0
                 camadaOculta.neuronios[i].ultimo_ajuste[j] = delta;
 
                 camadaOculta.neuronios[i].pesos[j] = camadaOculta.neuronios[i].pesos[j] + delta;
