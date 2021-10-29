@@ -36,7 +36,7 @@ public class Main {
         //Deve iterar em todas as entradas, calculando o erro, ajustando os pesos e passando para a prox entrada
         //Limitada pela funcao treshold
 
-        double erro_geral = 0.0;
+        rede.erro_geral = 0.0;
         //Passa por todos as entradas do conjunto de treinamento
         for (int i = 0; i < Holdout.conjTreinamento.size(); i++) {//CORRIGIR
             Double[] entrada = Holdout.conjTreinamento.get(i).vetorEntradas;
@@ -64,10 +64,11 @@ public class Main {
 
             rede.ajustaPesosCamadaOculta(entrada);//TODO: Verificar
 
+            rede.calculaErroTotal(Holdout.conjTreinamento.get(i));//TODO: Verificar
+            rede.erros_exemplo = 0;
         }
-        erro_geral = rede.calculaErroTotal(Holdout.conjTreinamento);//TODO: Verificar
 
-        return erro_geral;
+        return (0.5) * (rede.erro_geral);
     }
 
     //Metodo para a etapa de verificacao
@@ -164,9 +165,9 @@ public class Main {
 
         System.out.println(neuronios_ocultos + ", " + taxa_aprendizado + ", " + momentum + ", " + num_epocas);
 
-        double erro_da_epoca = -1;
+        double erro_da_epoca;
         int i = 0;
-        while (i <= num_epocas) {
+         do {
             erro_da_epoca = treinaRede(rede);
 
             if (i % 1000 == 0) {
@@ -175,7 +176,7 @@ public class Main {
             }
 
             i++;
-        }
+        }while (i < num_epocas);
 
         testaRede(rede, local,erro_da_epoca);
 
@@ -188,8 +189,8 @@ public class Main {
 
         //TODO: Não encontrei divergencias entre as implementações dos métodos e as funções apresentadas pela professora, tudo está de acordo e parece funcionar corretamente
         //Conferi o cálculo de erro, ajuste dos pesos e a normalização e tudo parecia fazer sentido, vou tentar rodar a rede com essas configurações por mais épocas e ver se observo algo
-        //Não consigo explicar os comportamentos que tenho observado (O mesmo erro por várias épocas, até de repente variar e voltar a repetir) (Apesar de que no geral se observa uma redução)
-        //A primeira época ter um erro extremamente baixo, por algum motivo.
-        runner(30, 1.0E-8, 0.05, 200000);
+
+        runner(30, 1.0E-7, 0.0, 1000000);
+
     }
 }

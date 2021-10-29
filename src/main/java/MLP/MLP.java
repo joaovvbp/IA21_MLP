@@ -14,6 +14,9 @@ public class MLP {
     public Camada camadaSaida;
     public double taxaDeAprendizado;
 
+    public double erros_exemplo = 0;
+    public double erro_geral = 0;
+
     //Sao inicializadas as camadas, chamando os construtores dos neuronios, onde sao inicializados os pesos
     public MLP(int neuroniosCamadaOculta, double taxaDeAprendizado) {
         this.taxaDeAprendizado = taxaDeAprendizado;
@@ -70,22 +73,16 @@ public class MLP {
         neuronio.ultimo_erro = saida * ((1 - saida) * somatoriaSaida);
     }
 
-    public double calculaErroTotal(List<Exemplo> conjunto) {
-        double somatorio_saidas = 0;
-        double somatorio_exemplos = 0;
-        for (int i = 0; i < conjunto.size() - 1; i++) {
-            int o_esperado = conjunto.get(i).retornaRotulo();
-            for (int j = 0; j < TAM_SAIDA; j++) {
-                if (o_esperado == j) {
-                    somatorio_saidas += Math.pow((1 - camadaSaida.neuronios[j].saida), 2);
-                } else {
-                    somatorio_saidas += Math.pow((0 - camadaSaida.neuronios[j].saida), 2);
-                }
+    public void calculaErroTotal(Exemplo exemplo) {
+        int o_esperado = exemplo.retornaRotulo();
+        for (int j = 0; j < TAM_SAIDA; j++) {
+            if (o_esperado == j) {
+                erros_exemplo += Math.pow((1 - camadaSaida.neuronios[j].saida), 2);
+            } else {
+                erros_exemplo += Math.pow((0 - camadaSaida.neuronios[j].saida), 2);
             }
-            somatorio_exemplos += somatorio_saidas;
-            somatorio_saidas = 0;
         }
-        return (0.5) * (somatorio_exemplos);
+        erro_geral += erros_exemplo;
     }
 
     public void ajustaPesosCamadaSaida() {
