@@ -1,7 +1,7 @@
 package MLP;
 
-import Processamento.Exemplo;
-import Processamento.Holdout;
+import Dados.Exemplo;
+import Dados.Holdout;
 
 import java.util.ArrayList;
 
@@ -152,5 +152,4 @@ public class MLP {
         //Retorna o erro quadrático da época
         return (0.5) * (rede.erro_geral);
     }
-
 }

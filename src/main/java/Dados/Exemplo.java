@@ -1,4 +1,4 @@
-package Processamento;
+package Dados;
 
 public class Exemplo {
     public Double[] vetorEntradas = new Double[64]; //Representa as entradas do arquivo.

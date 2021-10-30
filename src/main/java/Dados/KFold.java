@@ -1,11 +1,11 @@
-package Processamento;
+package Dados;
 
 import java.util.ArrayList;
 import java.util.Collections;
 
 public class KFold {
 
-    static ArrayList<ArrayList<Exemplo>> folds = new ArrayList<>();
+    public static ArrayList<ArrayList<Exemplo>> folds = new ArrayList<>();
 
     public static void kFoldCrossValidation(){
         embaralharDados();
@@ -17,6 +17,7 @@ public class KFold {
     }
 
     public static void dividir(){
+        embaralharDados();
         for (int i = 0; i < 10; i++) {
             ArrayList<Exemplo> fold = new ArrayList<>();
             for (int j = 0; j < ProcessaDados.entradas.size()/10; j++) {

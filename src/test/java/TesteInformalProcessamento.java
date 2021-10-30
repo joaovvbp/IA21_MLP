@@ -1,6 +1,6 @@
-import Processamento.Holdout;
-import Processamento.KFold;
-import Processamento.ProcessaDados;
+import Dados.Holdout;
+import Dados.KFold;
+import Dados.ProcessaDados;
 
 public class TesteInformalProcessamento {
 

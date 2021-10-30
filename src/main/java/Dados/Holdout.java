@@ -1,4 +1,4 @@
-package Processamento;
+package Dados;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,10 +12,6 @@ public class Holdout {
     public static Random random = new Random();
     
     Holdout(){ }
-
-    public static void holdout() {
-        dividir();
-    }
 
     //Faz a divisão dos elementos entre os dois conjuntos
     public static void dividir() {
