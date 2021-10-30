@@ -6,9 +6,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ProcessamentoDeArquivo {
+public class ProcessaDados {
 
-    public ProcessamentoDeArquivo(){ } //Construtor padrão
+    public ProcessaDados(){ } //Construtor padrão
 
     public static List<Exemplo> entradas = new ArrayList<>(); //Vetor com os exemplos de entrada
 

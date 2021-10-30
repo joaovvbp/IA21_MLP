@@ -1,13 +1,13 @@
 import Processamento.Holdout;
-import Processamento.KFoldCrossValidation;
-import Processamento.ProcessamentoDeArquivo;
+import Processamento.KFold;
+import Processamento.ProcessaDados;
 
 public class TesteInformalProcessamento {
 
     public static void main(String[] args) {
-        ProcessamentoDeArquivo.processarDados("src/main/resources/optdigits.csv");
+        ProcessaDados.processarDados("src/main/resources/optdigits.dat");
         Holdout.holdout();
-        KFoldCrossValidation.kFoldCrossValidation();
+        KFold.kFoldCrossValidation();
     }
 
 }
