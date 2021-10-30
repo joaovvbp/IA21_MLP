@@ -1,6 +1,7 @@
 package Runner;
 
 import MLP.MLP;
+import Processamento.Exemplo;
 import Processamento.Holdout;
 import Processamento.ProcessamentoDeArquivo;
 
@@ -8,6 +9,7 @@ import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Random;
 /*
  * TODO: Passos a serem implementados
@@ -33,16 +35,12 @@ public class Main {
 
     //Metodo para a etapa de treinamento
     public static double treinaRede(MLP rede) {
-        //Deve iterar em todas as entradas, calculando o erro, ajustando os pesos e passando para a prox entrada
-        //Limitada pela funcao treshold
-
         rede.erro_geral = 0.0;
         //Passa por todos as entradas do conjunto de treinamento
         for (int i = 0; i < Holdout.conjTreinamento.size(); i++) {//CORRIGIR
-            Double[] entrada = Holdout.conjTreinamento.get(i).vetorEntradas;
             int classe_esperada = Holdout.conjTreinamento.get(i).retornaRotulo();
 
-            rede.forwardPropagation(entrada, rede);
+            rede.forwardPropagation(Holdout.conjTreinamento.get(i).vetorEntradas, rede);
 
             for (int j = 0; j < rede.camadaSaida.tamanhoCamada; j++) {
                 if (j == classe_esperada) {
@@ -53,16 +51,12 @@ public class Main {
             }
 
             for (int k = 0; k < rede.camadaOculta.tamanhoCamada; k++) {
-                if (k == classe_esperada) {
-                    rede.calculaErroNeuronioOculto(rede.camadaOculta.neuronios[k], rede.camadaOculta.neuronios[k].saida);//TODO: Verificar
-                } else {
-                    rede.calculaErroNeuronioOculto(rede.camadaOculta.neuronios[k], rede.camadaOculta.neuronios[k].saida);
-                }
+                rede.calculaErroNeuronioOculto(rede.camadaOculta.neuronios[k], rede.camadaOculta.neuronios[k].saida);
             }
 
-            rede.ajustaPesosCamadaSaida();//TODO: Verificar
+            rede.ajustaPesosCamadaOculta(Holdout.conjTreinamento.get(i).vetorEntradas);//TODO: Verificar
 
-            rede.ajustaPesosCamadaOculta(entrada);//TODO: Verificar
+            rede.ajustaPesosCamadaSaida();//TODO: Verificar
 
             rede.calculaErroTotal(Holdout.conjTreinamento.get(i));//TODO: Verificar
             rede.erros_exemplo = 0;
@@ -117,13 +111,13 @@ public class Main {
 //        }
 
         for (int i = 0; i < 10; i++) { //Imprime ou armazena como csv
-            if (i == 0){
-                System.out.print((int)erro_total+", ");
-                writer.append((int)erro_total+", ");
+            if (i == 0) {
+                System.out.print((int) erro_total + ", ");
+                writer.append((int) erro_total + ", ");
                 for (int j = 0; j < 10; j++) {
                     if (j == 9) {
                         System.out.print(j);
-                        writer.append(j+"");
+                        writer.append(j + "");
                     } else {
                         System.out.print(j + ", ");
                         writer.append(j + ", ");
@@ -132,13 +126,13 @@ public class Main {
                 System.out.println();
                 writer.append("\n");
             }
-            System.out.print(i +", ");
-            writer.append(i +", ");
+            System.out.print(i + ", ");
+            writer.append(i + ", ");
             for (int j = 0; j < 10; j++) {
                 //System.out.print(j +", ");
                 if (j == 9) {
                     System.out.print(matriz_confusao[i][j]);
-                    writer.append(matriz_confusao[i][j]+"");
+                    writer.append(matriz_confusao[i][j] + "");
                 } else {
                     System.out.print(matriz_confusao[i][j] + ", ");
                     writer.append(matriz_confusao[i][j] + ", ");
@@ -151,34 +145,30 @@ public class Main {
         writer.close();
     }
 
-    public static void runner(int neuronios_ocultos, double taxa_aprendizado, double momentum, int num_epocas) throws IOException {
+    public static void runner(int neuronios_ocultos, double taxa_aprendizado, double momentum, int num_epocas, List<Exemplo> conjTreinamento) throws IOException {
         Random random = new Random();
-        String local = "src/main/resources/test_data_ID" + random.nextInt(100) + ".txt";
-        BufferedWriter writer = new BufferedWriter(new FileWriter(local, true));
         MLP rede = new MLP(neuronios_ocultos, taxa_aprendizado);
         rede.momentum = momentum;
 
-        preparaDados("src/main/resources/optdigits.csv");
+        String local = "src/main/resources/test_data_ID" + random.nextInt(10000) + ".txt";
+        BufferedWriter writer = new BufferedWriter(new FileWriter(local, true));
 
-        writer.append("Tamanho do conjunto de treinamento: ").append(String.valueOf(Holdout.conjTreinamento.size())).append("\n");
-        writer.append("Configs da rede: ").append(String.valueOf(neuronios_ocultos)).append(", ").append(String.valueOf(taxa_aprendizado)).append(", ").append(String.valueOf(momentum)).append(", ").append(String.valueOf(num_epocas)).append("\n\n");
+        writer.append("Tamanho do conjunto de treinamento: ").append(String.valueOf(conjTreinamento.size())).append("\n");
 
-        System.out.println(neuronios_ocultos + ", " + taxa_aprendizado + ", " + momentum + ", " + num_epocas);
-
-        double erro_da_epoca;
+        double erro_da_epoca = 0;
         int i = 0;
-         do {
+        do {
             erro_da_epoca = treinaRede(rede);
 
-            if (i % 1000 == 0) {
-                System.out.println("E[" + i + "] = " + erro_da_epoca);
-                writer.append("E[").append(String.valueOf(i)).append("] = ").append(String.valueOf(erro_da_epoca)).append(";\n");
-            }
+            System.out.println("E[" + i + "] = " + erro_da_epoca);
+            writer.append("E[").append(String.valueOf(i)).append("] = ").append(String.valueOf(erro_da_epoca)).append(";\n");
 
             i++;
-        }while (i < num_epocas);
+        } while (i < num_epocas);
 
-        testaRede(rede, local,erro_da_epoca);
+        testaRede(rede, local, erro_da_epoca);
+        System.out.println(neuronios_ocultos + ", " + taxa_aprendizado + ", " + momentum + ", " + num_epocas);
+        writer.append(String.valueOf(neuronios_ocultos)).append(", ").append(String.valueOf(taxa_aprendizado)).append(", ").append(String.valueOf(momentum)).append(", ").append(String.valueOf(num_epocas)).append("\n\n");
 
         writer.close();
     }
@@ -190,7 +180,19 @@ public class Main {
         //TODO: Não encontrei divergencias entre as implementações dos métodos e as funções apresentadas pela professora, tudo está de acordo e parece funcionar corretamente
         //Conferi o cálculo de erro, ajuste dos pesos e a normalização e tudo parecia fazer sentido, vou tentar rodar a rede com essas configurações por mais épocas e ver se observo algo
 
-        runner(30, 1.0E-7, 0.0, 1000000);
+        double[] taxas = new double[]{1.0E-1,1.0E-2,1.0E-3,1.0E-4};
+        int[] neuronios = new int[]{10,15,20,25,30,35,40,45,50,55,60,65};
+        double[] momentum = new double[]{0.1,0.2,0.4,0.6,0.8};
+
+        preparaDados("src/main/resources/optdigits.csv");
+
+        for (int i = 0; i < taxas.length; i++) {
+            for (int j = 0; j < neuronios.length; j++) {
+                for (int k = 0; k < momentum.length; k++) {
+                    runner(neuronios[j], taxas[i], momentum[k], 300, Holdout.conjTreinamento);
+                }
+            }
+        }
 
     }
 }

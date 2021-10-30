@@ -60,11 +60,11 @@ public class MLP {
         return rotulo;
     }
 
-    public void calculaErroNeuronioSaida(Neuronio neuronio, double saida, double esperado) {//Seria interessante armazenar esse erro em algum local, pra nao calcular duas vezes
+    public void calculaErroNeuronioSaida(Neuronio neuronio, double saida, double esperado) {
         neuronio.ultimo_erro = saida * (1 - saida) * (esperado - saida);
     }
 
-    public void calculaErroNeuronioOculto(Neuronio neuronio, double saida) {//Nao calcula
+    public void calculaErroNeuronioOculto(Neuronio neuronio, double saida) {
         //Somatoria dos erros de saida
         double somatoriaSaida = 0.0;
         for (int i = 0; i < TAM_SAIDA; i++) {
@@ -90,9 +90,9 @@ public class MLP {
         for (int i = 0; i < TAM_SAIDA; i++) {
             double delta = 0;
             for (int j = 0; j < camadaOculta.tamanhoCamada; j++) {
-                delta = taxaDeAprendizado * camadaSaida.neuronios[i].ultimo_erro * camadaOculta.neuronios[j].saida + momentum * camadaSaida.neuronios[i].ultimo_ajuste[j];
+                delta = taxaDeAprendizado * camadaSaida.neuronios[i].ultimo_erro * camadaOculta.neuronios[j].saida;// + momentum * camadaSaida.neuronios[i].ultimo_ajuste[j];
                 //Alterei o ultimo ajuste pra representar o ajuste de cada peso, tambem alterei o indice do parametro correspondente ao Xij na funcao
-                camadaSaida.neuronios[i].ultimo_ajuste[j] = delta;
+                //camadaSaida.neuronios[i].ultimo_ajuste[j] = delta;
 
                 camadaSaida.neuronios[i].pesos[j] = camadaSaida.neuronios[i].pesos[j] + delta;
             }
@@ -105,8 +105,8 @@ public class MLP {
         for (int i = 0; i < camadaOculta.tamanhoCamada; i++) {
             double delta = 0;
             for (int j = 0; j < TAM_ENTRADA; j++) {
-                delta = taxaDeAprendizado * camadaOculta.neuronios[i].ultimo_erro * entrada[j] + momentum * camadaOculta.neuronios[i].ultimo_ajuste[j];//Com uma entrada 0, isso resulta num ajuste de 0
-                camadaOculta.neuronios[i].ultimo_ajuste[j] = delta;
+                delta = taxaDeAprendizado * camadaOculta.neuronios[i].ultimo_erro * entrada[j]; //+ momentum * camadaOculta.neuronios[i].ultimo_ajuste[j];//Com uma entrada 0, isso resulta num ajuste de 0
+                //camadaOculta.neuronios[i].ultimo_ajuste[j] = delta;
 
                 camadaOculta.neuronios[i].pesos[j] = camadaOculta.neuronios[i].pesos[j] + delta;
             }
