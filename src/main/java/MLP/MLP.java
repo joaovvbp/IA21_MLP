@@ -5,6 +5,8 @@ import Processamento.Exemplo;
 import java.util.ArrayList;
 import java.util.List;
 
+import static java.lang.Math.exp;
+
 public class MLP {
     final int TAM_ENTRADA = 64;
     final int TAM_SAIDA = 10;

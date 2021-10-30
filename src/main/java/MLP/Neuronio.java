@@ -26,9 +26,7 @@ public class Neuronio {
         for (int i = 0; i < pesos.length; i++) {
             pesos[i] = random.nextDouble() * (1 + 1) - 1;
         }
-    }
-
-    public void normalizaPesos() {
+        /*
         double somapesos = 0;
         for (double peso : pesos) {
             somapesos += peso;
@@ -36,6 +34,20 @@ public class Neuronio {
         for (int i = 0; i < pesos.length; i++) {
             pesos[i] = pesos[i] / somapesos;
         }
+         */
+    }
+
+    public void normalizaPesos() {
+        /*
+        double somapesos = 0;
+        for (double peso : pesos) {
+            somapesos += peso;
+        }
+        for (int i = 0; i < pesos.length; i++) {
+            pesos[i] = pesos[i] / somapesos;
+        }
+
+         */
     }
 
     public void somaPonderadaOculta(Double[] entrada) {
