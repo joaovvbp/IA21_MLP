@@ -34,13 +34,18 @@ public class Main {
     }
 
     //Metodo para a etapa de treinamento
-    public static double treinaRede(MLP rede) {
+    public static double treinaRede(MLP rede) {//TODO: Refatorar por completo, incluindo todas as funções internas
         rede.erro_geral = 0.0;
         //Passa por todos as entradas do conjunto de treinamento
         for (int i = 0; i < Holdout.conjTreinamento.size(); i++) {//CORRIGIR
             int classe_esperada = Holdout.conjTreinamento.get(i).retornaRotulo();
 
-            rede.forwardPropagation(Holdout.conjTreinamento.get(i).vetorEntradas, rede);
+            for (int j = 0; j < rede.camadaOculta.tamanhoCamada; j++) {
+                rede.camadaOculta.neuronios[j].somaPonderadaOculta(Holdout.conjTreinamento.get(i).vetorEntradas);
+            }
+            for (int j = 0; j < rede.camadaSaida.tamanhoCamada; j++) {
+                rede.camadaSaida.neuronios[j].somaPonderadaSaida(rede.camadaOculta);
+            }
 
             for (int j = 0; j < rede.camadaSaida.tamanhoCamada; j++) {
                 if (j == classe_esperada) {
@@ -174,25 +179,11 @@ public class Main {
     }
 
     public static void main(String[] args) throws IOException {
-        //TODO: Elaborar um loop para conseguir testar diferentes configuracoes de rede de forma automatica, registrando os dados num arquivo CSV
         //TODO: A rede nao converge, pode ser um problema no calculo e ajuste dos erros (independentes do erro geral)
-
-        //TODO: Não encontrei divergencias entre as implementações dos métodos e as funções apresentadas pela professora, tudo está de acordo e parece funcionar corretamente
         //Conferi o cálculo de erro, ajuste dos pesos e a normalização e tudo parecia fazer sentido, vou tentar rodar a rede com essas configurações por mais épocas e ver se observo algo
 
-        double[] taxas = new double[]{1.0E-1,1.0E-2,1.0E-3,1.0E-4};
-        int[] neuronios = new int[]{10,15,20,25,30,35,40,45,50,55,60,65};
-        double[] momentum = new double[]{0.1,0.2,0.4,0.6,0.8};
-
         preparaDados("src/main/resources/optdigits.csv");
-
-        for (int i = 0; i < taxas.length; i++) {
-            for (int j = 0; j < neuronios.length; j++) {
-                for (int k = 0; k < momentum.length; k++) {
-                    runner(neuronios[j], taxas[i], momentum[k], 300, Holdout.conjTreinamento);
-                }
-            }
-        }
+        runner(35, 0.001, 0.4, 300, Holdout.conjTreinamento);
 
     }
 }
