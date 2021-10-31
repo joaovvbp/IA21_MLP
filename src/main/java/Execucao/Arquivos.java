@@ -53,30 +53,31 @@ public class Arquivos {
 
         writer_saida.append("\n");
 
-        writer_saida.append(" EPOCAS, ERRO_QUADRATICO_TESTE\n");
+        writer_saida.append("EPOCAS, ERRO_QUADRATICO_TESTE\n");
         for (double[] erros_quadratico : erros_quadraticos_teste) {
-            writer_saida.append(" ").append(String.valueOf(erros_quadratico[0])).append(", ").append(String.valueOf(erros_quadratico[1]));
+            writer_saida.append(String.valueOf(erros_quadratico[0])).append(", ").append(String.valueOf(erros_quadratico[1]));
             writer_saida.append("\n");
         }
 
         writer_saida.append("\n");
 
-        writer_saida.append(" EPOCAS, ERRO_QUADRATICO_VALIDACAO\n");
+        writer_saida.append("EPOCAS, ERRO_QUADRATICO_VALIDACAO\n");
         for (double[] erros_quadratico : erros_quadraticos_valid) {
-            writer_saida.append(" ").append(String.valueOf(erros_quadratico[0])).append(", ").append(String.valueOf(erros_quadratico[1]));
+            writer_saida.append(String.valueOf(erros_quadratico[0])).append(", ").append(String.valueOf(erros_quadratico[1]));
             writer_saida.append("\n");
         }
 
         writer_saida.append("\n");
 
-        writer_saida.append(" EPOCAS, ERRO_QUADRATICO_TREINO\n");
+        writer_saida.append("EPOCAS, ERRO_QUADRATICO_TREINO\n");
         for (double[] erros_quadratico : erros_quadraticos_treino) {
-            writer_saida.append(" ").append(String.valueOf(erros_quadratico[0])).append(", ").append(String.valueOf(erros_quadratico[1]));
+            writer_saida.append(String.valueOf(erros_quadratico[0])).append(", ").append(String.valueOf(erros_quadratico[1]));
             writer_saida.append("\n");
         }
 
         writer_saida.append("\n");
 
+        writer_saida.append("MATRIZ_CONFUSAO\n");
         for (int i = 0; i < 10; i++) {
             if (i == 0) {
                 writer_saida.append("0, ");
