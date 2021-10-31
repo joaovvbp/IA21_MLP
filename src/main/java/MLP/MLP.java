@@ -3,6 +3,7 @@ package MLP;
 import Dados.Exemplo;
 import Dados.Holdout;
 
+import java.awt.image.AreaAveragingScaleFilter;
 import java.util.ArrayList;
 
 public class MLP {
@@ -17,7 +18,8 @@ public class MLP {
     public Camada camadaOculta;
     public Camada camadaSaida;
 
-    public ArrayList<double[]> erros_quadraticos = new ArrayList<double[]>();
+    public ArrayList<double[]> erros_quadraticos = new ArrayList<double[]>();//Usado para armazenar as epocas
+
     public double erros_exemplo = 0;//Somatório dos erros quadrático para cada exemplo
     public double erro_geral = 0;//Somatório dos erros de todos os exemplos
 
@@ -30,16 +32,15 @@ public class MLP {
     }
 
     //Propaga o exemplo ao longo da rede, o método de soma ponderada já calcula
-    public void forwardPropagation(Double[] entrada, MLP rede) {
-        for (int i = 0; i < rede.camadaOculta.tamanhoCamada; i++) {
-            rede.camadaOculta.neuronios[i].propagaOculta(entrada);
+    public void forwardPropagation(Double[] entrada) {
+        for (int i = 0; i < camadaOculta.tamanhoCamada; i++) {
+            camadaOculta.neuronios[i].propagaOculta(entrada);
         }
-        for (int i = 0; i < rede.camadaSaida.tamanhoCamada; i++) {
-            rede.camadaSaida.neuronios[i].propagaSaida(rede.camadaOculta);
+        for (int i = 0; i < camadaSaida.tamanhoCamada; i++) {
+            camadaSaida.neuronios[i].propagaSaida(camadaOculta);
         }
     }
 
-    //Itera
     public int[] converteSaida(Camada camadaSaida) {
         double maior_saida = -1.0;
         int classe = -1;
@@ -79,6 +80,7 @@ public class MLP {
         neuronio.ultimo_erro = saida * ((1 - saida) * somatoriaSaida);
     }
 
+    //Calcula o erro quadratico armazenando resultados parciais em atributos da rede
     public void erroQuadratico(Exemplo exemplo) {
         int o_esperado = exemplo.retornaRotulo();
         for (int j = 0; j < TAM_SAIDA; j++) {
@@ -90,7 +92,6 @@ public class MLP {
         }
         erro_geral += erros_exemplo;
     }
-
 
     public void ajustaPesosCamadaSaida() {
         for (int i = 0; i < TAM_SAIDA; i++) {
@@ -124,7 +125,7 @@ public class MLP {
             int classe_esperada = Holdout.conjTreinamento.get(i).retornaRotulo();
 
             //Propraga a entrada pela rede, calcula a soma ponderada, funções de ativação e armazena a saída nos neurônios
-            rede.forwardPropagation(Holdout.conjTreinamento.get(i).vetorEntradas, rede);
+            rede.forwardPropagation(Holdout.conjTreinamento.get(i).vetorEntradas);
 
             //Calcula o erro de cada um dos neurônios da camada de saída
             for (int j = 0; j < rede.camadaSaida.tamanhoCamada; j++) {
@@ -148,7 +149,6 @@ public class MLP {
             rede.erroQuadratico(Holdout.conjTreinamento.get(i));
             rede.erros_exemplo = 0;
         }
-
         //Retorna o erro quadrático da época
         return (0.5) * (rede.erro_geral);
     }

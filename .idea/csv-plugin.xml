@@ -17,7 +17,21 @@
             </Attribute>
           </value>
         </entry>
+        <entry key="/src/main/resources/teste_fixo_epocas_oculto.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
         <entry key="/src/main/resources/teste_fixo_matriz.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="/src/main/resources/teste_fixo_matriz_oculto.csv">
           <value>
             <Attribute>
               <option name="separator" value="," />
