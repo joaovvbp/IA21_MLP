@@ -14,16 +14,26 @@ public class Arquivos {
 
     String prefixo_local;
 
-    public Arquivos(String prefixo_local) {this.prefixo_local = prefixo_local;}
+    public Arquivos(String prefixo_local) {
+        this.prefixo_local = prefixo_local;
+    }
 
     public void limpaArquivos() throws IOException {
         PrintWriter writer_oculto = new PrintWriter(prefixo_local + "_pesos_oculto.csv");
         writer_oculto.print("");
         writer_oculto.close();
 
-        PrintWriter writer_saida = new PrintWriter(prefixo_local + "_epocas.csv");
-        writer_saida.print("");
-        writer_saida.close();
+        PrintWriter writer_saida_t = new PrintWriter(prefixo_local + "_epocas_teste.csv");
+        writer_saida_t.print("");
+        writer_saida_t.close();
+
+        PrintWriter writer_saida_v = new PrintWriter(prefixo_local + "_epocas_valid.csv");
+        writer_saida_v.print("");
+        writer_saida_v.close();
+
+        PrintWriter writer_saida_tr = new PrintWriter(prefixo_local + "_epocas_treino.csv");
+        writer_saida_tr.print("");
+        writer_saida_tr.close();
 
         PrintWriter writer_epocas = new PrintWriter(prefixo_local + "_matriz.csv");
         writer_epocas.print("");
@@ -32,6 +42,66 @@ public class Arquivos {
         PrintWriter writer_matriz = new PrintWriter(prefixo_local + "_pesos_saida.csv");
         writer_matriz.print("");
         writer_matriz.close();
+    }
+
+    public void registraSaida(MLP rede, int[][] matriz_confusao, ArrayList<double[]> erros_quadraticos_teste, ArrayList<double[]> erros_quadraticos_valid, ArrayList<double[]> erros_quadraticos_treino, int n_epocas) throws IOException {
+        BufferedWriter writer_saida = new BufferedWriter(new FileWriter(prefixo_local + "_saida.txt"));
+
+        writer_saida.append("N_EPOCAS, ERRO_VERDADEIRO\n");
+        writer_saida.append(String.valueOf(n_epocas)).append(", ").append(Main.calculaErroVerdairo(rede));
+        writer_saida.append("\n");
+
+        writer_saida.append("\n");
+
+        writer_saida.append(" EPOCAS, ERRO_QUADRATICO_TESTE\n");
+        for (double[] erros_quadratico : erros_quadraticos_teste) {
+            writer_saida.append(" ").append(String.valueOf(erros_quadratico[0])).append(", ").append(String.valueOf(erros_quadratico[1]));
+            writer_saida.append("\n");
+        }
+
+        writer_saida.append("\n");
+
+        writer_saida.append(" EPOCAS, ERRO_QUADRATICO_VALIDACAO\n");
+        for (double[] erros_quadratico : erros_quadraticos_valid) {
+            writer_saida.append(" ").append(String.valueOf(erros_quadratico[0])).append(", ").append(String.valueOf(erros_quadratico[1]));
+            writer_saida.append("\n");
+        }
+
+        writer_saida.append("\n");
+
+        writer_saida.append(" EPOCAS, ERRO_QUADRATICO_TREINO\n");
+        for (double[] erros_quadratico : erros_quadraticos_treino) {
+            writer_saida.append(" ").append(String.valueOf(erros_quadratico[0])).append(", ").append(String.valueOf(erros_quadratico[1]));
+            writer_saida.append("\n");
+        }
+
+        writer_saida.append("\n");
+
+        for (int i = 0; i < 10; i++) {
+            if (i == 0) {
+                writer_saida.append("0, ");
+                for (int j = 0; j < 10; j++) {
+                    if (j == 9) {
+                        writer_saida.append(String.valueOf(j));
+                    } else {
+                        writer_saida.append(String.valueOf(j)).append(", ");
+                    }
+                }
+                writer_saida.append("\n");
+            }
+            writer_saida.append(String.valueOf(i)).append(", ");
+            for (int j = 0; j < 10; j++) {
+                if (j == 9) {
+                    writer_saida.append(String.valueOf(matriz_confusao[i][j]));
+                } else {
+                    writer_saida.append(String.valueOf(matriz_confusao[i][j])).append(", ");
+                }
+            }
+            writer_saida.append("\n");
+        }
+        writer_saida.append("\n");
+        writer_saida.close();
+
     }
 
     public void registraRede(MLP rede) throws IOException {
@@ -57,9 +127,21 @@ public class Arquivos {
         writer_saida.close();
     }
 
-    public void registraErroQuadratico(ArrayList<double[]> erros_quadraticos) throws IOException {
-        BufferedWriter writer = new BufferedWriter(new FileWriter(prefixo_local + "_epocas.csv", true));
-        writer.append(" EPOCA, ERRO-QUADRATICO\n");
+    public void registraErroQuadratico(ArrayList<double[]> erros_quadraticos, int conjunto) throws IOException {
+        String posfixo = null;
+        switch (conjunto) {
+            case (1):
+                posfixo = "_epocas_teste.csv";
+                break;
+            case (2):
+                posfixo = "_epocas_valid.csv";
+                break;
+            case (3):
+                posfixo = "_epocas_treino.csv";
+                break;
+        }
+        BufferedWriter writer = new BufferedWriter(new FileWriter(prefixo_local + posfixo, true));
+        writer.append(" EPOCAS, ERRO-QUADRATICO\n");
         for (double[] erros_quadratico : erros_quadraticos) {
             writer.append(" ").append(String.valueOf(erros_quadratico[0])).append(", ").append(String.valueOf(erros_quadratico[1]));
             writer.append("\n");
@@ -72,35 +154,26 @@ public class Arquivos {
         //Escrita no arquivo (Matriz pronta em formato CSV)
         for (int i = 0; i < 10; i++) {
             if (i == 0) {
-                System.out.print("0, ");
                 writer.append("0, ");
                 for (int j = 0; j < 10; j++) {
                     if (j == 9) {
-                        System.out.print(j);
                         writer.append(String.valueOf(j));
                     } else {
-                        System.out.print(j + ", ");
                         writer.append(String.valueOf(j)).append(", ");
                     }
                 }
-                System.out.println();
                 writer.append("\n");
             }
-            System.out.print(i + ", ");
             writer.append(String.valueOf(i)).append(", ");
             for (int j = 0; j < 10; j++) {
                 if (j == 9) {
-                    System.out.print(matriz_confusao[i][j]);
                     writer.append(String.valueOf(matriz_confusao[i][j]));
                 } else {
-                    System.out.print(matriz_confusao[i][j] + ", ");
                     writer.append(String.valueOf(matriz_confusao[i][j])).append(", ");
                 }
             }
-            System.out.println();
             writer.append("\n");
         }
-        System.out.println();
         writer.append("\n");
         writer.close();
     }

@@ -10,8 +10,6 @@ public class Holdout {
     public static List<Exemplo> conjValidacao = new ArrayList<>();
     public static List<Exemplo> conjTeste = new ArrayList<>();
     public static Random random = new Random();
-    
-    Holdout(){ }
 
     //Faz a divisão dos elementos entre os dois conjuntos
     public static void dividir() {

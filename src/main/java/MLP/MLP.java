@@ -18,10 +18,22 @@ public class MLP {
     public Camada camadaOculta;
     public Camada camadaSaida;
 
-    public ArrayList<double[]> erros_quadraticos = new ArrayList<double[]>();//Usado para armazenar as epocas
+    public double erros_teste = 0;
+    public double erros_valid = 0;
+    public double erros_treino = 0;
 
-    public double erros_exemplo = 0;//Somatório dos erros quadrático para cada exemplo
-    public double erro_geral = 0;//Somatório dos erros de todos os exemplos
+    public double erro_geral_teste = 0;
+    public double erro_geral_valid = 0;
+    public double erro_geral_treino = 0;
+
+    public double erro_final_teste = 0;
+    public double erro_final_valid = 0;
+    public double erro_final_treino = 0;
+
+    public ArrayList<double[]> erros_quadraticos_teste = new ArrayList<double[]>();//Usado para armazenar as epocas
+    public ArrayList<double[]> erros_quadraticos_valid = new ArrayList<double[]>();//Usado para armazenar as epocas
+    public ArrayList<double[]> erros_quadraticos_treino = new ArrayList<double[]>();//Usado para armazenar as epocas
+
 
     //Sao inicializadas as camadas, chamando os construtores dos neuronios, onde sao inicializados os pesos
     public MLP(int neuroniosCamadaOculta, double taxaDeAprendizado, double momentum) {
@@ -81,16 +93,47 @@ public class MLP {
     }
 
     //Calcula o erro quadratico armazenando resultados parciais em atributos da rede
-    public void erroQuadratico(Exemplo exemplo) {
+    //Armazena em variaveis de acordo com o conjunto para qual o erro esta sendo calculado
+    public void erroQuadratico(Exemplo exemplo, int conjunto) {
         int o_esperado = exemplo.retornaRotulo();
         for (int j = 0; j < TAM_SAIDA; j++) {
             if (o_esperado == j) {
-                erros_exemplo += Math.pow((1 - camadaSaida.neuronios[j].saida), 2);
+                switch (conjunto) {
+                    case (1):
+                        erros_teste += Math.pow((1 - camadaSaida.neuronios[j].saida), 2);
+                        break;
+                    case (2):
+                        erros_valid += Math.pow((1 - camadaSaida.neuronios[j].saida), 2);
+                        break;
+                    case (3):
+                        erros_treino += Math.pow((1 - camadaSaida.neuronios[j].saida), 2);
+                        break;
+                }
             } else {
-                erros_exemplo += Math.pow((0 - camadaSaida.neuronios[j].saida), 2);
+                switch (conjunto) {
+                    case (1):
+                        erros_teste += Math.pow((0 - camadaSaida.neuronios[j].saida), 2);
+                        break;
+                    case (2):
+                        erros_valid += Math.pow((0 - camadaSaida.neuronios[j].saida), 2);
+                        break;
+                    case (3):
+                        erros_treino += Math.pow((0 - camadaSaida.neuronios[j].saida), 2);
+                        break;
+                }
             }
         }
-        erro_geral += erros_exemplo;
+        switch (conjunto) {
+            case (1):
+                erro_geral_teste += erros_teste;
+                break;
+            case (2):
+                erro_geral_valid += erros_valid;
+                break;
+            case (3):
+                erro_geral_treino += erros_treino;
+                break;
+        }
     }
 
     public void ajustaPesosCamadaSaida() {
@@ -118,11 +161,28 @@ public class MLP {
         }
     }
 
-    public double treinaRede(MLP rede) {
-        rede.erro_geral = 0.0;
+    public void treinaRede(MLP rede) {
+        rede.erro_geral_teste = 0.0;
+        rede.erro_geral_valid = 0.0;
+        rede.erro_geral_treino = 0.0;
         //Passa por todos as entradas do conjunto de treinamento
+
         for (int i = 0; i < Holdout.conjTreinamento.size(); i++) {
             int classe_esperada = Holdout.conjTreinamento.get(i).retornaRotulo();
+
+            if (i < Holdout.conjTeste.size()) {
+                rede.forwardPropagation(Holdout.conjTeste.get(i).vetorEntradas);
+                rede.erroQuadratico(Holdout.conjTeste.get(i), 1);
+                rede.erros_teste = 0;
+                erro_final_teste = (0.5) * (rede.erro_geral_teste);
+            }
+
+            if (i < Holdout.conjValidacao.size()) {
+                rede.forwardPropagation(Holdout.conjValidacao.get(i).vetorEntradas);
+                rede.erroQuadratico(Holdout.conjValidacao.get(i), 2);
+                rede.erros_valid = 0;
+                erro_final_valid = (0.5) * (rede.erro_geral_valid);
+            }
 
             //Propraga a entrada pela rede, calcula a soma ponderada, funções de ativação e armazena a saída nos neurônios
             rede.forwardPropagation(Holdout.conjTreinamento.get(i).vetorEntradas);
@@ -146,10 +206,10 @@ public class MLP {
             rede.ajustaPesosCamadaSaida();
 
             //Calcula o erro quadrático iterativamente, armazenando os somatórios na rede
-            rede.erroQuadratico(Holdout.conjTreinamento.get(i));
-            rede.erros_exemplo = 0;
+            rede.erroQuadratico(Holdout.conjTreinamento.get(i), 3);
+            rede.erros_treino = 0;
         }
         //Retorna o erro quadrático da época
-        return (0.5) * (rede.erro_geral);
+        erro_final_treino = (0.5) * (rede.erro_geral_treino);
     }
 }

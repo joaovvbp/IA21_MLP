@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Random;
 
+//Apenas o erro quadratico e calculado dentro da MLP
 public class Main {
     static Random random = new Random();//Usado na nomeacao dos arquivos
 
@@ -36,6 +37,16 @@ public class Main {
         return 1 - erro;
     }
 
+    public static String calculaErroVerdairo(MLP rede) {
+        double e = calculaErro(Holdout.conjTeste, rede);
+        double se = Math.sqrt(e * (1 - e) / Holdout.conjTeste.size());
+
+        double lower = e - (1.96 * se);
+        double upper = e + (1.96 * se);
+
+        return (lower + ", " + upper);
+    }
+
     //Metodo para a etapa de testes
     public static int[][] testaRede(MLP rede, List<Exemplo> conjunto) throws IOException {
         //Matriz de confusao (Pode ser executada em qualquer um dos conjuntos)
@@ -54,17 +65,22 @@ public class Main {
         return matriz_confusao;
     }
 
-    public static void treinaRede(MLP rede, double acuracia, List<Exemplo> conjunto_treino, List<Exemplo> conjunto_validacao ) throws IOException {
+    public static int treinaRede(MLP rede, double acuracia, List<Exemplo> conjunto_validacao) throws IOException {
         double erro_da_epoca;
-        int i = 0;
+        int n_epocas = 0;
 
         do {
-            erro_da_epoca = rede.treinaRede(rede);
-            rede.erros_quadraticos.add(new double[]{i, erro_da_epoca});
-            i++;
+            rede.treinaRede(rede);
+
+            rede.erros_quadraticos_teste.add(new double[]{n_epocas, rede.erro_final_teste});
+            rede.erros_quadraticos_valid.add(new double[]{n_epocas, rede.erro_final_valid});
+            rede.erros_quadraticos_treino.add(new double[]{n_epocas, rede.erro_final_treino});
+
+            n_epocas++;
         } while (validaRede(rede, conjunto_validacao) < acuracia);
 
         testaRede(rede, Holdout.conjTeste);
+        return n_epocas;
     }
 
     //Metodo para a etapa de verificacao
@@ -79,7 +95,7 @@ public class Main {
 
         preparaDados("src/main/resources/optdigits.dat");
 
-        int n_ocultos = 25;
+        int n_ocultos = 20;
         double t_aprendizado = 0.1;
         double momentum = 0.9;
         double acuracia = 0.95;
@@ -87,11 +103,14 @@ public class Main {
         Arquivos arquivos = new Arquivos(prefixo_local);
         MLP rede = new MLP(n_ocultos, t_aprendizado, momentum);
 
-        treinaRede(rede, acuracia, Holdout.conjTreinamento, Holdout.conjValidacao);
+        int n_epocas = treinaRede(rede, acuracia, Holdout.conjValidacao);
 
         arquivos.limpaArquivos();
-        arquivos.registraErroQuadratico(rede.erros_quadraticos);
+        arquivos.registraErroQuadratico(rede.erros_quadraticos_teste, 1);
+        arquivos.registraErroQuadratico(rede.erros_quadraticos_valid, 2);
+        arquivos.registraErroQuadratico(rede.erros_quadraticos_treino, 3);
         arquivos.registraMatrizConfusao(testaRede(rede, Holdout.conjTeste));
         arquivos.registraRede(rede);
+        arquivos.registraSaida(rede, testaRede(rede, Holdout.conjTeste), rede.erros_quadraticos_teste, rede.erros_quadraticos_valid, rede.erros_quadraticos_treino, n_epocas-1);
     }
 }
