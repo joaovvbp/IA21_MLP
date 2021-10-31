@@ -3,7 +3,6 @@ package MLP;
 import Dados.Exemplo;
 import Dados.Holdout;
 
-import java.awt.image.AreaAveragingScaleFilter;
 import java.util.ArrayList;
 
 public class MLP {
@@ -30,9 +29,9 @@ public class MLP {
     public double erro_final_valid = 0;
     public double erro_final_treino = 0;
 
-    public ArrayList<double[]> erros_quadraticos_teste = new ArrayList<double[]>();//Usado para armazenar as epocas
-    public ArrayList<double[]> erros_quadraticos_valid = new ArrayList<double[]>();//Usado para armazenar as epocas
-    public ArrayList<double[]> erros_quadraticos_treino = new ArrayList<double[]>();//Usado para armazenar as epocas
+    public ArrayList<double[]> erros_quadraticos_teste = new ArrayList<>();//Usado para armazenar as epocas
+    public ArrayList<double[]> erros_quadraticos_valid = new ArrayList<>();//Usado para armazenar as epocas
+    public ArrayList<double[]> erros_quadraticos_treino = new ArrayList<>();//Usado para armazenar as epocas
 
 
     //Sao inicializadas as camadas, chamando os construtores dos neuronios, onde sao inicializados os pesos
@@ -138,7 +137,7 @@ public class MLP {
 
     public void ajustaPesosCamadaSaida() {
         for (int i = 0; i < TAM_SAIDA; i++) {
-            double delta = 0;
+            double delta;
             for (int j = 0; j < camadaOculta.tamanhoCamada; j++) {
                 delta = taxaDeAprendizado * camadaSaida.neuronios[i].ultimo_erro * camadaOculta.neuronios[j].saida + momentum * camadaSaida.neuronios[i].ultimo_ajuste[j];
                 camadaSaida.neuronios[i].ultimo_ajuste[j] = delta;
@@ -151,7 +150,7 @@ public class MLP {
     //A função utiliza uma entrada Xij para o cálculo do ajuste dos pesos, portanto este método precisa receber como entrada um dos vetores do conjunto de treinamento.
     public void ajustaPesosCamadaOculta(Double[] entrada) {
         for (int i = 0; i < camadaOculta.tamanhoCamada; i++) {
-            double delta = 0;
+            double delta;
             for (int j = 0; j < TAM_ENTRADA; j++) {
                 delta = taxaDeAprendizado * camadaOculta.neuronios[i].ultimo_erro * entrada[j] + momentum * camadaOculta.neuronios[i].ultimo_ajuste[j];
                 camadaOculta.neuronios[i].ultimo_ajuste[j] = delta;

@@ -8,12 +8,9 @@ import Dados.ProcessaDados;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.Random;
 
 //Apenas o erro quadratico e calculado dentro da MLP
 public class Main {
-    static Random random = new Random();//Usado na nomeacao dos arquivos
-
     //Metodo para o processamento de dados e divisão de conjuntos
     public static void preparaDados(String local) {
         //Processa o conjunto de dados
@@ -48,7 +45,7 @@ public class Main {
     }
 
     //Metodo para a etapa de testes
-    public static int[][] testaRede(MLP rede, List<Exemplo> conjunto) throws IOException {
+    public static int[][] testaRede(MLP rede, List<Exemplo> conjunto){
         //Matriz de confusao (Pode ser executada em qualquer um dos conjuntos)
         int[][] matriz_confusao = new int[10][10];
 
@@ -65,8 +62,7 @@ public class Main {
         return matriz_confusao;
     }
 
-    public static int treinaRede(MLP rede, double acuracia, List<Exemplo> conjunto_validacao) throws IOException {
-        double erro_da_epoca;
+    public static int treinaRede(MLP rede, double acuracia, List<Exemplo> conjunto_validacao){
         int n_epocas = 0;
 
         do {

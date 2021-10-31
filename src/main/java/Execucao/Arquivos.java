@@ -1,9 +1,7 @@
 package Execucao;
 
 import MLP.MLP;
-import jdk.jshell.spi.SPIResolutionException;
 
-import javax.swing.text.html.HTMLDocument;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;

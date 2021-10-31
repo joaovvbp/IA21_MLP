@@ -7,7 +7,7 @@ import static java.lang.Math.exp;
 public class Neuronio {
     Random random = new Random();
     //TODO: Econtrar uma forma de se livrar disso, é meio gambiarra
-    public int ID = -1; //Usado para se referenciar ao neurônio quando não se tem acesso ao seu indíce no vetor da camada diretamente
+    public int ID; //Usado para se referenciar ao neurônio quando não se tem acesso ao seu indíce no vetor da camada diretamente
 
     public double saida;
     public double soma_ponderada;//Em outras palavras, a entrada "Geral" de um Neuronio
@@ -31,7 +31,6 @@ public class Neuronio {
         }
     }
 
-    //Isso destrói a rede...
     public void normalizaPesos() {
         double somapesos = 0;
         for (double peso : pesos) {
