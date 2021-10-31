@@ -42,7 +42,7 @@ public class Arquivos {
         writer_matriz.close();
     }
 
-    public void registraSaida(MLP rede, int[][] matriz_confusao, ArrayList<double[]> erros_quadraticos_teste, ArrayList<double[]> erros_quadraticos_valid, ArrayList<double[]> erros_quadraticos_treino, int n_epocas) throws IOException {
+    public void registraSaida(MLP rede, double acuracia, int[][] matriz_confusao, ArrayList<double[]> erros_quadraticos_teste, ArrayList<double[]> erros_quadraticos_valid, ArrayList<double[]> erros_quadraticos_treino, int n_epocas) throws IOException {
         BufferedWriter writer_saida = new BufferedWriter(new FileWriter(prefixo_local + "_saida.txt"));
 
         writer_saida.append("N_EPOCAS, ERRO_VERDADEIRO\n");
@@ -78,7 +78,7 @@ public class Arquivos {
         writer_saida.append("MATRIZ_CONFUSAO\n");
         for (int i = 0; i < 10; i++) {
             if (i == 0) {
-                writer_saida.append("0, ");
+                writer_saida.append(String.valueOf(acuracia)).append(", ");
                 for (int j = 0; j < 10; j++) {
                     if (j == 9) {
                         writer_saida.append(String.valueOf(j));
@@ -148,12 +148,12 @@ public class Arquivos {
         writer.close();
     }
 
-    public void registraMatrizConfusao(int[][] matriz_confusao) throws IOException {
+    public void registraMatrizConfusao(int[][] matriz_confusao, double acuracia) throws IOException {
         BufferedWriter writer = new BufferedWriter(new FileWriter(prefixo_local + "_matriz.csv", true));
         //Escrita no arquivo (Matriz pronta em formato CSV)
         for (int i = 0; i < 10; i++) {
             if (i == 0) {
-                writer.append("0, ");
+                writer.append(String.valueOf(acuracia)).append(", ");
                 for (int j = 0; j < 10; j++) {
                     if (j == 9) {
                         writer.append(String.valueOf(j));

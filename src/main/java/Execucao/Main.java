@@ -45,7 +45,7 @@ public class Main {
     }
 
     //Metodo para a etapa de testes
-    public static int[][] testaRede(MLP rede, List<Exemplo> conjunto){
+    public static int[][] testaRede(MLP rede, List<Exemplo> conjunto) {
         //Matriz de confusao (Pode ser executada em qualquer um dos conjuntos)
         int[][] matriz_confusao = new int[10][10];
 
@@ -62,7 +62,7 @@ public class Main {
         return matriz_confusao;
     }
 
-    public static int treinaRede(MLP rede, double acuracia, List<Exemplo> conjunto_validacao){
+    public static int treinaRede(MLP rede, double acuracia, List<Exemplo> conjunto_validacao) {
         int n_epocas = 0;
 
         do {
@@ -91,8 +91,8 @@ public class Main {
 
         preparaDados("src/main/resources/optdigits.dat");
 
-        int n_ocultos = 20;
-        double t_aprendizado = 0.1;
+        int n_ocultos = 30;
+        double t_aprendizado = 0.01;
         double momentum = 0.9;
         double acuracia = 0.95;
 
@@ -101,12 +101,20 @@ public class Main {
 
         int n_epocas = treinaRede(rede, acuracia, Holdout.conjValidacao);
 
+        //Registra os dados em arquivos CSV e um único arquivo de saída .txt
+        //É possível alterar o endereço e manter os arquivos alterando o endereço prefixo_local utilizado no construtor da classe Arquivos
         arquivos.limpaArquivos();
+
         arquivos.registraErroQuadratico(rede.erros_quadraticos_teste, 1);
+
         arquivos.registraErroQuadratico(rede.erros_quadraticos_valid, 2);
+
         arquivos.registraErroQuadratico(rede.erros_quadraticos_treino, 3);
-        arquivos.registraMatrizConfusao(testaRede(rede, Holdout.conjTeste));
+
+        arquivos.registraMatrizConfusao(testaRede(rede, Holdout.conjTeste), acuracia);
+
         arquivos.registraRede(rede);
-        arquivos.registraSaida(rede, testaRede(rede, Holdout.conjTeste), rede.erros_quadraticos_teste, rede.erros_quadraticos_valid, rede.erros_quadraticos_treino, n_epocas-1);
+
+        arquivos.registraSaida(rede, acuracia, testaRede(rede, Holdout.conjTeste), rede.erros_quadraticos_teste, rede.erros_quadraticos_valid, rede.erros_quadraticos_treino, n_epocas - 1);
     }
 }
