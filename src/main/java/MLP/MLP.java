@@ -160,7 +160,7 @@ public class MLP {
         }
     }
 
-    public void treinaRede(MLP rede) {
+    public void treinaRedeHoldout(MLP rede) {
         rede.erro_geral_teste = 0.0;
         rede.erro_geral_valid = 0.0;
         rede.erro_geral_treino = 0.0;

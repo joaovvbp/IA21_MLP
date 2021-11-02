@@ -42,11 +42,17 @@ public class Arquivos {
         writer_matriz.close();
     }
 
-    public void registraSaida(MLP rede, double acuracia, int[][] matriz_confusao, ArrayList<double[]> erros_quadraticos_teste, ArrayList<double[]> erros_quadraticos_valid, ArrayList<double[]> erros_quadraticos_treino, int n_epocas) throws IOException {
+    public void registraSaidaKFOLD(MLP rede, int n_neuronios, double taxa_aprendizado, double momentum, double acuracia, int[][] matriz_confusao, ArrayList<double[]> erros_quadraticos_teste, ArrayList<double[]> erros_quadraticos_valid, ArrayList<double[]> erros_quadraticos_treino, int n_epocas) throws IOException {
         BufferedWriter writer_saida = new BufferedWriter(new FileWriter(prefixo_local + "_saida.txt"));
 
         writer_saida.append("N_EPOCAS, ERRO_VERDADEIRO\n");
         writer_saida.append(String.valueOf(n_epocas)).append(", ").append(Main.calculaErroVerdairo(rede));
+        writer_saida.append("\n");
+
+        writer_saida.append("\n");
+
+        writer_saida.append("N_NEURONIOS, TAXA_APRENDIZADO, MOMENTUM, ACURACIA\n");
+        writer_saida.append(String.valueOf(n_neuronios)).append(", ").append(String.valueOf(taxa_aprendizado)).append(", ").append(String.valueOf(momentum)).append(", ").append(String.valueOf(acuracia));
         writer_saida.append("\n");
 
         writer_saida.append("\n");
