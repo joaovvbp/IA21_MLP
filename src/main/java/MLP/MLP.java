@@ -2,8 +2,10 @@ package MLP;
 
 import Dados.Exemplo;
 import Dados.Holdout;
+import Dados.KFold;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class MLP {
     //Constantes
@@ -158,6 +160,40 @@ public class MLP {
                 camadaOculta.neuronios[i].pesos[j] = camadaOculta.neuronios[i].pesos[j] + delta;
             }
         }
+    }
+
+    public void treinaRedeKFold(MLP rede, List<Exemplo> conjunto) {
+        //Passa por todos as entradas do conjunto de treinamento
+        for (int i = 0; i < conjunto.size(); i++) {
+            int classe_esperada = conjunto.get(i).retornaRotulo();
+
+            //Propraga a entrada pela rede, calcula a soma ponderada, funções de ativação e armazena a saída nos neurônios
+            rede.forwardPropagation(conjunto.get(i).vetorEntradas);
+
+            //Calcula o erro de cada um dos neurônios da camada de saída
+            for (int j = 0; j < rede.camadaSaida.tamanhoCamada; j++) {
+                if (j == classe_esperada) {
+                    rede.calculaErroNeuronioSaida(rede.camadaSaida.neuronios[j], rede.camadaSaida.neuronios[j].saida, 1);
+                } else {
+                    rede.calculaErroNeuronioSaida(rede.camadaSaida.neuronios[j], rede.camadaSaida.neuronios[j].saida, 0);
+                }
+            }
+
+            //Calcula o erro de cada um dos neurônios da camada oculta
+            for (int k = 0; k < rede.camadaOculta.tamanhoCamada; k++) {
+                rede.calculaErroNeuronioOculto(rede.camadaOculta.neuronios[k], rede.camadaOculta.neuronios[k].saida);
+            }
+
+            //Ajusta os pesos da camada oculta e de saída
+            rede.ajustaPesosCamadaOculta(conjunto.get(i).vetorEntradas);
+            rede.ajustaPesosCamadaSaida();
+
+            //Calcula o erro quadrático iterativamente, armazenando os somatórios na rede
+            rede.erroQuadratico(conjunto.get(i), 3);
+            rede.erros_treino = 0;
+        }
+        //Retorna o erro quadrático da época
+        erro_final_treino = (0.5) * (rede.erro_geral_treino);
     }
 
     public void treinaRedeHoldout(MLP rede) {
