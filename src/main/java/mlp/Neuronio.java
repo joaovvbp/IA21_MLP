@@ -1,4 +1,4 @@
-package MLP;
+package mlp;
 
 import java.util.Random;
 

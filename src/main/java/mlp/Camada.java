@@ -1,4 +1,4 @@
-package MLP;
+package mlp;
 
 public class Camada {
     public Neuronio[] neuronios;//Representa os neurônios da camada

@@ -1,8 +1,7 @@
-package MLP;
+package mlp;
 
-import Dados.Exemplo;
-import Dados.Holdout;
-import Dados.KFold;
+import dados.Exemplo;
+import dados.Holdout;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,7 +34,7 @@ public class MLP {
     public ArrayList<double[]> erros_quadraticos_valid = new ArrayList<>();//Usado para armazenar as epocas
     public ArrayList<double[]> erros_quadraticos_treino = new ArrayList<>();//Usado para armazenar as epocas
 
-    public ArrayList<double[]> erros_verdadeiros_folds = new ArrayList();
+    public ArrayList<double[]> errosVerdadeirosFolds = new ArrayList();
 
     //Sao inicializadas as camadas, chamando os construtores dos neuronios, onde sao inicializados os pesos
     public MLP(int neuroniosCamadaOculta, double taxaDeAprendizado, double momentum) {

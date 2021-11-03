@@ -1,13 +1,12 @@
-package Execucao;
+package execucao;
 
-import MLP.MLP;
-import Dados.Exemplo;
-import Dados.Holdout;
-import Dados.KFold;
-import Dados.ProcessaDados;
+import mlp.MLP;
+import dados.Exemplo;
+import dados.Holdout;
+import dados.KFold;
+import dados.ProcessaDados;
 
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.List;
 
 //Apenas o erro quadratico e calculado dentro da MLP
@@ -66,12 +65,12 @@ public class Main {
     public static double[] calculaMediaKFolds(MLP rede) {
         double somatorio_upper = 0;
         double somatorio_lower = 0;
-        for (int i = 0; i < rede.erros_verdadeiros_folds.size(); i++) {
-            double[] erro_verdadeiro = rede.erros_verdadeiros_folds.get(i);
+        for (int i = 0; i < rede.errosVerdadeirosFolds.size(); i++) {
+            double[] erro_verdadeiro = rede.errosVerdadeirosFolds.get(i);
             somatorio_upper += erro_verdadeiro[0];
             somatorio_lower += erro_verdadeiro[1];
         }
-        return new double[]{somatorio_upper/rede.erros_verdadeiros_folds.size(), somatorio_lower/rede.erros_verdadeiros_folds.size()};
+        return new double[]{somatorio_upper/rede.errosVerdadeirosFolds.size(), somatorio_lower/rede.errosVerdadeirosFolds.size()};
     }
 
     public static int treinaRede(MLP rede, double acuracia, int abordagem) throws IOException {
@@ -102,7 +101,7 @@ public class Main {
                             rede.treinaRedeKFold(rede, KFold.folds.get(j));
                         }
                     }
-                    rede.erros_verdadeiros_folds.add(calculaErroVerdairo(rede, KFold.folds.get(i)));
+                    rede.errosVerdadeirosFolds.add(calculaErroVerdairo(rede, KFold.folds.get(i)));
                 }
                 return 0;
         }
@@ -118,9 +117,9 @@ public class Main {
         preparaDados("src/main/resources/optdigits.dat");
 
         //Parametros da rede
-        int n_ocultos = 20;
-        double t_aprendizado = 1.0;
-        double momentum = 0.9;
+        int n_ocultos = 30;
+        double t_aprendizado = 0.05;
+        double momentum = 0.5;
         double acuracia = 0.95;
 
         Arquivos arquivos = new Arquivos("src/main/resources/relatorio");
