@@ -20,14 +20,14 @@ public class Main {
     }
 
     public static double calculaErro(List<Exemplo> conjunto, MLP rede) {
-        double somatorio_erro = -1;
+        double somatorioErro = -1;
         for (Exemplo exemplo : conjunto) {
             rede.forwardPropagation(exemplo.vetorEntradas);
             if (exemplo.retornaRotulo() != rede.retornaRotulo(rede.converteSaida(rede.camadaSaida))) {
-                somatorio_erro += 1;
+                somatorioErro += 1;
             }
         }
-        return somatorio_erro / conjunto.size();
+        return somatorioErro / conjunto.size();
     }
 
     public static double calculaAcuracia(double erro) {//Complexa! leia de novo se nao entender
@@ -47,7 +47,7 @@ public class Main {
     //Metodo para a etapa de testes
     public static int[][] testaRede(MLP rede, List<Exemplo> conjunto) {
         //Matriz de confusao (Pode ser executada em qualquer um dos conjuntos)
-        int[][] matriz_confusao = new int[10][10];
+        int[][] matrizConfusao = new int[10][10];
 
         for (Exemplo exemplo : conjunto) {
             rede.forwardPropagation(exemplo.vetorEntradas);
@@ -56,56 +56,49 @@ public class Main {
             int esperado = exemplo.retornaRotulo();
             int obtido = rede.retornaRotulo(saida);
 
-            matriz_confusao[esperado][obtido] += 1;
+            matrizConfusao[esperado][obtido] += 1;
         }
 
-        return matriz_confusao;
+        return matrizConfusao;
     }
 
     public static double[] calculaMediaKFolds(MLP rede) {
-        double somatorio_upper = 0;
-        double somatorio_lower = 0;
+        double somatorioUpper = 0;
+        double somatorioLower = 0;
         for (int i = 0; i < rede.errosVerdadeirosFolds.size(); i++) {
-            double[] erro_verdadeiro = rede.errosVerdadeirosFolds.get(i);
-            somatorio_upper += erro_verdadeiro[0];
-            somatorio_lower += erro_verdadeiro[1];
+            double[] erroVerdadeiro = rede.errosVerdadeirosFolds.get(i);
+            somatorioUpper += erroVerdadeiro[0];
+            somatorioLower += erroVerdadeiro[1];
         }
-        return new double[]{somatorio_upper/rede.errosVerdadeirosFolds.size(), somatorio_lower/rede.errosVerdadeirosFolds.size()};
+        return new double[]{somatorioUpper/rede.errosVerdadeirosFolds.size(), somatorioLower/rede.errosVerdadeirosFolds.size()};
     }
 
-    public static int treinaRede(MLP rede, double acuracia, int abordagem) throws IOException {
-        int n_epocas = 0;
-        String prefixo_local = "src/main/resources/teste_fixo";
-        Arquivos arquivos = new Arquivos(prefixo_local);
+    public static int treinaRede(MLP rede, double acuracia, int abordagem) {
+        int numeroEpocas = 0;
 
-        switch (abordagem) {
-            case (1)://Holdout
-                do {
-                    rede.treinaRedeHoldout(rede);
+        if (abordagem == 1) {//Holdout
+            do {
+                rede.treinaRedeHoldout(rede);
+                rede.erros_quadraticos_teste.add(new double[]{numeroEpocas, rede.erro_final_teste});
+                rede.erros_quadraticos_valid.add(new double[]{numeroEpocas, rede.erro_final_valid});
+                rede.erros_quadraticos_treino.add(new double[]{numeroEpocas, rede.erro_final_treino});
+                numeroEpocas++;
+            } while (validaRede(rede, Holdout.conjValidacao) < acuracia);
 
-                    rede.erros_quadraticos_teste.add(new double[]{n_epocas, rede.erro_final_teste});
-                    rede.erros_quadraticos_valid.add(new double[]{n_epocas, rede.erro_final_valid});
-                    rede.erros_quadraticos_treino.add(new double[]{n_epocas, rede.erro_final_treino});
+            testaRede(rede, Holdout.conjTeste);
+            return numeroEpocas;
 
-                    n_epocas++;
-                } while (validaRede(rede, Holdout.conjValidacao) < acuracia);
-
-                testaRede(rede, Holdout.conjTeste);
-                return n_epocas;
-
-            case (2)://K-fold
-                //TODO: Desenvolver uma funçao para treino utilizando o K-FOLD, basta se basear na funcao de treino com holdout.
-                for (int i = 0; i < 10; i++) {
-                    for (int j = 0; j < 10; j++) {
-                        if (j != i) {
-                            rede.treinaRedeKFold(rede, KFold.folds.get(j));
-                        }
+        } else { //K-fold
+            for (int i = 0; i < 10; i++) {
+                for (int j = 0; j < 10; j++) {
+                    if (j != i) {
+                        rede.treinaRedeKFold(rede, KFold.folds.get(j));
                     }
-                    rede.errosVerdadeirosFolds.add(calculaErroVerdairo(rede, KFold.folds.get(i)));
                 }
-                return 0;
+                rede.errosVerdadeirosFolds.add(calculaErroVerdairo(rede, KFold.folds.get(i)));
+            }
+            return 0;
         }
-        return -1;//Se alcançou este trecho, algo deu errado
     }
 
     //Metodo para a etapa de verificacao
@@ -117,22 +110,22 @@ public class Main {
         preparaDados("src/main/resources/optdigits.dat");
 
         //Parametros da rede
-        int n_ocultos = 30;
-        double t_aprendizado = 0.05;
+        int neuroniosOcultos = 30;
+        double taxaAprendizado = 0.05;
         double momentum = 0.5;
         double acuracia = 0.95;
 
         Arquivos arquivos = new Arquivos("src/main/resources/relatorio");
         arquivos.limpaArquivos();
 
-        MLP rede_h = new MLP(n_ocultos, t_aprendizado, momentum);
-        int n_epocas = treinaRede(rede_h, acuracia, 1);//Abordagem 1 = Holdout
+        MLP redeH = new MLP(neuroniosOcultos, taxaAprendizado, momentum);
+        int numeroEpocas = treinaRede(redeH, acuracia, 1);//Abordagem 1 = Holdout
 
-        arquivos.registraSaidaHoldout(rede_h, n_ocultos, t_aprendizado, momentum, acuracia, testaRede(rede_h, Holdout.conjTeste), rede_h.erros_quadraticos_teste, rede_h.erros_quadraticos_valid, rede_h.erros_quadraticos_treino, n_epocas);
+        arquivos.registraSaidaHoldout(redeH, neuroniosOcultos, taxaAprendizado, momentum, acuracia, testaRede(redeH, Holdout.conjTeste), redeH.erros_quadraticos_teste, redeH.erros_quadraticos_valid, redeH.erros_quadraticos_treino, numeroEpocas);
 
-        MLP rede_k = new MLP(n_ocultos, t_aprendizado, momentum);
-        treinaRede(rede_k, acuracia, 2);//Abordagem 1 = Holdout
+        MLP redeK = new MLP(neuroniosOcultos, taxaAprendizado, momentum);
+        treinaRede(redeK, acuracia, 2);//Abordagem 1 = Holdout
 
-        arquivos.registraSaidaKFOLD(rede_k, n_ocultos, t_aprendizado, momentum, acuracia);
+        arquivos.registraSaidaKFOLD(redeK, neuroniosOcultos, taxaAprendizado, momentum, acuracia);
     }
 }
