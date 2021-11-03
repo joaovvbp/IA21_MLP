@@ -8,8 +8,7 @@ import java.util.List;
 
 public class ProcessaDados {
 
-    public ProcessaDados() {
-    } //Construtor padrão
+    ProcessaDados() { } //Construtor padrão
 
     public static List<Exemplo> entradas = new ArrayList<>(); //Vetor com os exemplos de entrada
 

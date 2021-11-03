@@ -7,6 +7,8 @@ public class KFold {
 
     public static ArrayList<ArrayList<Exemplo>> folds = new ArrayList<>();
 
+    KFold(){ }
+
     public static void kFoldCrossValidation() {
         embaralharDados();
         dividir();

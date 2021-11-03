@@ -84,7 +84,7 @@ public class Arquivos {
 
             writerSaida.append("\n");
 
-            writerSaida.append("EPOCAS, ERRO QUADRATICO TREINO\n");
+            writerSaida.append("EPOCAS, ERRO QUADRATICO CONJ TREINO\n");
             for (double[] errosQuadratico : errosQuadraticosTreino) {
                 writerSaida.append(String.valueOf(errosQuadratico[0])).append(", ").append(String.valueOf(errosQuadratico[1]));
                 writerSaida.append("\n");
@@ -158,7 +158,7 @@ public class Arquivos {
         }
         BufferedWriter writer = new BufferedWriter(new FileWriter(prefixoLocal + posfixo, true));
         try (writer) {
-            writer.append(" EPOCAS, ERRO-QUADRATICO\n");
+            writer.append(" EPOCAS, ERRO QUADRATICO\n");
             for (double[] errosQuadratico : errosQuadraticos) {
                 writer.append(" ").append(String.valueOf(errosQuadratico[0])).append(", ").append(String.valueOf(errosQuadratico[1]));
                 writer.append("\n");

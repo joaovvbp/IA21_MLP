@@ -1,6 +1,7 @@
 package dados;
 
 public class Exemplo {
+
     public Double[] vetorEntradas = new Double[64]; //Representa as entradas do arquivo.
     int[] rotulo = new int[10]; //Representa o rótulo. O número do índice com valor 1 é o rótulo.
 
