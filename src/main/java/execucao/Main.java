@@ -79,9 +79,9 @@ public class Main {
         if (abordagem == 1) {//Holdout
             do {
                 rede.treinaRedeHoldout(rede);
-                rede.erros_quadraticos_teste.add(new double[]{numeroEpocas, rede.erro_final_teste});
-                rede.erros_quadraticos_valid.add(new double[]{numeroEpocas, rede.erro_final_valid});
-                rede.erros_quadraticos_treino.add(new double[]{numeroEpocas, rede.erro_final_treino});
+                rede.errosQuadraticosTeste.add(new double[]{numeroEpocas, rede.erroFinalTeste});
+                rede.errosQuadraticosValid.add(new double[]{numeroEpocas, rede.erroFinalValid});
+                rede.errosQuadraticosTreino.add(new double[]{numeroEpocas, rede.erroFinalTreino});
                 numeroEpocas++;
             } while (validaRede(rede, Holdout.conjValidacao) < acuracia);
 
@@ -110,9 +110,9 @@ public class Main {
         preparaDados("src/main/resources/optdigits.dat");
 
         //Parametros da rede
-        int neuroniosOcultos = 30;
-        double taxaAprendizado = 0.05;
-        double momentum = 0.5;
+        int neuroniosOcultos = 25;
+        double taxaAprendizado = 0.06;
+        double momentum = 0.7;
         double acuracia = 0.95;
 
         Arquivos arquivos = new Arquivos("src/main/resources/relatorio");
@@ -121,7 +121,7 @@ public class Main {
         MLP redeH = new MLP(neuroniosOcultos, taxaAprendizado, momentum);
         int numeroEpocas = treinaRede(redeH, acuracia, 1);//Abordagem 1 = Holdout
 
-        arquivos.registraSaidaHoldout(redeH, neuroniosOcultos, taxaAprendizado, momentum, acuracia, testaRede(redeH, Holdout.conjTeste), redeH.erros_quadraticos_teste, redeH.erros_quadraticos_valid, redeH.erros_quadraticos_treino, numeroEpocas);
+        arquivos.registraSaidaHoldout(redeH, neuroniosOcultos, taxaAprendizado, momentum, acuracia, testaRede(redeH, Holdout.conjTeste), redeH.errosQuadraticosTeste, redeH.errosQuadraticosValid, redeH.errosQuadraticosTreino, numeroEpocas);
 
         MLP redeK = new MLP(neuroniosOcultos, taxaAprendizado, momentum);
         treinaRede(redeK, acuracia, 2);//Abordagem 1 = Holdout
