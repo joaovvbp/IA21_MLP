@@ -154,8 +154,14 @@ public class Arquivos {
         writer.close();
     }
 
-    public void registraMatrizConfusao(int[][] matriz_confusao, double acuracia) throws IOException {
+    public void registraMatrizConfusao(int neuronios, double taxaAprendizado, double momentum, int[][] matriz_confusao, double acuracia) throws IOException {
+
         BufferedWriter writer = new BufferedWriter(new FileWriter(prefixo_local + "_matriz.csv", true));
+
+        writer.append("N_NEURONIOS, TAXA_APRENDIZADO, MOMENTUM, ACURACIA\n");
+        writer.append(String.valueOf(neuronios)).append(", ").append(String.valueOf(taxaAprendizado)).append(", ").append(String.valueOf(momentum)).append(", ").append(String.valueOf(acuracia));
+        writer.append("\n\n");
+
         //Escrita no arquivo (Matriz pronta em formato CSV)
         for (int i = 0; i < 10; i++) {
             if (i == 0) {

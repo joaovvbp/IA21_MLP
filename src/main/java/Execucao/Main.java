@@ -113,7 +113,7 @@ public class Main {
         double t_aprendizado = 1.0;
         double momentum = 0.9;
         double acuracia = 0.95;
-        int abordagem = 2;
+        int abordagem = 1;
 
         Arquivos arquivos = new Arquivos(prefixo_local);
         MLP rede = new MLP(n_ocultos, t_aprendizado, momentum);
@@ -122,10 +122,10 @@ public class Main {
 
         //Registra os dados em arquivos CSV e um único arquivo de saída .txt
         //É possível alterar o endereço e manter os arquivos alterando o endereço prefixo_local utilizado no construtor da classe Arquivos
-         arquivos.limpaArquivos();
+        //arquivos.limpaArquivos();
 
          //TODO: Desenvolver uma funçao de registro de saida individual para o K-FOLD
-
-        arquivos.registraSaidaKFOLD(rede, n_ocultos, t_aprendizado, momentum, acuracia, testaRede(rede, Holdout.conjTeste), rede.erros_quadraticos_teste, rede.erros_quadraticos_valid, rede.erros_quadraticos_treino, n_epocas - 1);
+        arquivos.registraMatrizConfusao(n_ocultos, t_aprendizado, momentum, testaRede(rede, Holdout.conjTeste),acuracia);
+        //arquivos.registraSaidaKFOLD(rede, n_ocultos, t_aprendizado, momentum, acuracia, testaRede(rede, Holdout.conjTeste), rede.erros_quadraticos_teste, rede.erros_quadraticos_valid, rede.erros_quadraticos_treino, n_epocas - 1);
     }
 }
