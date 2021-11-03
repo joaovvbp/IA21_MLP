@@ -1,5 +1,7 @@
 package Execucao;
 
+import Dados.Exemplo;
+import Dados.Holdout;
 import MLP.MLP;
 
 import java.io.BufferedWriter;
@@ -7,6 +9,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.List;
 
 public class Arquivos {
 
@@ -17,36 +20,46 @@ public class Arquivos {
     }
 
     public void limpaArquivos() throws IOException {
-        PrintWriter writer_oculto = new PrintWriter(prefixo_local + "_pesos_oculto.csv");
-        writer_oculto.print("");
-        writer_oculto.close();
+        PrintWriter writer_kfold = new PrintWriter(prefixo_local + "_saida_kfold.txt");
+        writer_kfold.print("");
+        writer_kfold.close();
 
-        PrintWriter writer_saida_t = new PrintWriter(prefixo_local + "_epocas_teste.csv");
-        writer_saida_t.print("");
-        writer_saida_t.close();
-
-        PrintWriter writer_saida_v = new PrintWriter(prefixo_local + "_epocas_valid.csv");
-        writer_saida_v.print("");
-        writer_saida_v.close();
-
-        PrintWriter writer_saida_tr = new PrintWriter(prefixo_local + "_epocas_treino.csv");
-        writer_saida_tr.print("");
-        writer_saida_tr.close();
-
-        PrintWriter writer_epocas = new PrintWriter(prefixo_local + "_matriz.csv");
-        writer_epocas.print("");
-        writer_epocas.close();
-
-        PrintWriter writer_matriz = new PrintWriter(prefixo_local + "_pesos_saida.csv");
-        writer_matriz.print("");
-        writer_matriz.close();
+        PrintWriter writer_holdout= new PrintWriter(prefixo_local + "_saida_holdout.txt");
+        writer_holdout.print("");
+        writer_holdout.close();
     }
 
-    public void registraSaidaKFOLD(MLP rede, int n_neuronios, double taxa_aprendizado, double momentum, double acuracia, int[][] matriz_confusao, ArrayList<double[]> erros_quadraticos_teste, ArrayList<double[]> erros_quadraticos_valid, ArrayList<double[]> erros_quadraticos_treino, int n_epocas) throws IOException {
-        BufferedWriter writer_saida = new BufferedWriter(new FileWriter(prefixo_local + "_saida.txt"));
+    public void registraSaidaKFOLD(MLP rede, int n_neuronios, double taxa_aprendizado, double momentum, double acuracia) throws IOException {
+        BufferedWriter writer_saida = new BufferedWriter(new FileWriter(prefixo_local + "_saida_kfold.txt"));
+
+        for (int i = 0; i < rede.erros_verdadeiros_folds.size(); i++) {
+            double[] erro_verdadeiro = rede.erros_verdadeiros_folds.get(i);
+            writer_saida.append("ERRO_VERDADEIRO FOLD(").append(String.valueOf(i)).append(")\n");
+            writer_saida.append(String.valueOf(erro_verdadeiro[0])).append(" > e > ").append(String.valueOf(erro_verdadeiro[1]));
+            writer_saida.append("\n\n");
+        }
+
+        double[] erro_geral = Main.calculaMediaKFolds(rede);
+        writer_saida.append("ERRO_CROSS_VALIDATION\n");
+        writer_saida.append(String.valueOf(erro_geral[0])).append(" > e > ").append(String.valueOf(erro_geral[1]));
+        writer_saida.append("\n");
+
+        writer_saida.append("\n");
+        writer_saida.append("N_NEURONIOS, TAXA_APRENDIZADO, MOMENTUM, ACURACIA\n");
+        writer_saida.append(String.valueOf(n_neuronios)).append(", ").append(String.valueOf(taxa_aprendizado)).append(", ").append(String.valueOf(momentum)).append(", ").append(String.valueOf(acuracia));
+        writer_saida.append("\n");
+
+        writer_saida.append("\n");
+        writer_saida.close();
+    }
+
+    public void registraSaidaHoldout(MLP rede, int n_neuronios, double taxa_aprendizado, double momentum, double acuracia, int[][] matriz_confusao, ArrayList<double[]> erros_quadraticos_teste, ArrayList<double[]> erros_quadraticos_valid, ArrayList<double[]> erros_quadraticos_treino, int n_epocas) throws IOException {
+        BufferedWriter writer_saida = new BufferedWriter(new FileWriter(prefixo_local + "_saida_holdout.txt"));
+
+        double[] erro_verdadeiro = Main.calculaErroVerdairo(rede, Holdout.conjTeste);
 
         writer_saida.append("N_EPOCAS, ERRO_VERDADEIRO\n");
-        writer_saida.append(String.valueOf(n_epocas)).append(", ").append(Main.calculaErroVerdairo(rede));
+        writer_saida.append(String.valueOf(n_epocas)).append(", ").append(String.valueOf(erro_verdadeiro[0])).append("> e >").append(String.valueOf(erro_verdadeiro[1]));
         writer_saida.append("\n");
 
         writer_saida.append("\n");
@@ -108,6 +121,7 @@ public class Arquivos {
         writer_saida.close();
 
     }
+
 
     public void registraRede(MLP rede) throws IOException {
         BufferedWriter writer_oculto = new BufferedWriter(new FileWriter(prefixo_local + "_pesos_oculto.csv"));

@@ -7,6 +7,7 @@ import Dados.KFold;
 import Dados.ProcessaDados;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
 
 //Apenas o erro quadratico e calculado dentro da MLP
@@ -34,14 +35,14 @@ public class Main {
         return 1 - erro;
     }
 
-    public static String calculaErroVerdairo(MLP rede) {
-        double e = calculaErro(Holdout.conjTeste, rede);
+    public static double[] calculaErroVerdairo(MLP rede, List<Exemplo> conjunto) {
+        double e = calculaErro(conjunto, rede);
         double se = Math.sqrt(e * (1 - e) / Holdout.conjTeste.size());
 
         double lower = e - (1.96 * se);
         double upper = e + (1.96 * se);
 
-        return (lower + " < e < " + upper);
+        return new double[]{upper, lower};
     }
 
     //Metodo para a etapa de testes
@@ -62,13 +63,24 @@ public class Main {
         return matriz_confusao;
     }
 
+    public static double[] calculaMediaKFolds(MLP rede) {
+        double somatorio_upper = 0;
+        double somatorio_lower = 0;
+        for (int i = 0; i < rede.erros_verdadeiros_folds.size(); i++) {
+            double[] erro_verdadeiro = rede.erros_verdadeiros_folds.get(i);
+            somatorio_upper += erro_verdadeiro[0];
+            somatorio_lower += erro_verdadeiro[1];
+        }
+        return new double[]{somatorio_upper/rede.erros_verdadeiros_folds.size(), somatorio_lower/rede.erros_verdadeiros_folds.size()};
+    }
+
     public static int treinaRede(MLP rede, double acuracia, int abordagem) throws IOException {
         int n_epocas = 0;
         String prefixo_local = "src/main/resources/teste_fixo";
         Arquivos arquivos = new Arquivos(prefixo_local);
 
-        switch (abordagem){
-            case(1)://Holdout
+        switch (abordagem) {
+            case (1)://Holdout
                 do {
                     rede.treinaRedeHoldout(rede);
 
@@ -82,15 +94,15 @@ public class Main {
                 testaRede(rede, Holdout.conjTeste);
                 return n_epocas;
 
-            case(2)://K-fold
+            case (2)://K-fold
                 //TODO: Desenvolver uma funçao para treino utilizando o K-FOLD, basta se basear na funcao de treino com holdout.
                 for (int i = 0; i < 10; i++) {
                     for (int j = 0; j < 10; j++) {
-                        if (j != i){
+                        if (j != i) {
                             rede.treinaRedeKFold(rede, KFold.folds.get(j));
                         }
                     }
-                    testaRede(rede, KFold.folds.get(i));
+                    rede.erros_verdadeiros_folds.add(calculaErroVerdairo(rede, KFold.folds.get(i)));
                 }
                 return 0;
         }
@@ -103,29 +115,25 @@ public class Main {
     }
 
     public static void main(String[] args) throws IOException {
-        //TODO: Gravar a rede em um arquivo após convergir
-        //TODO: Implementar a etapa de testes e verificação
-        String prefixo_local = "src/main/resources/teste_fixo";
-
         preparaDados("src/main/resources/optdigits.dat");
 
-        int n_ocultos = 10;
+        //Parametros da rede
+        int n_ocultos = 20;
         double t_aprendizado = 1.0;
         double momentum = 0.9;
         double acuracia = 0.95;
-        int abordagem = 1;
 
-        Arquivos arquivos = new Arquivos(prefixo_local);
-        MLP rede = new MLP(n_ocultos, t_aprendizado, momentum);
+        Arquivos arquivos = new Arquivos("src/main/resources/relatorio");
+        arquivos.limpaArquivos();
 
-        int n_epocas = treinaRede(rede, acuracia, abordagem);
+        MLP rede_h = new MLP(n_ocultos, t_aprendizado, momentum);
+        int n_epocas = treinaRede(rede_h, acuracia, 1);//Abordagem 1 = Holdout
 
-        //Registra os dados em arquivos CSV e um único arquivo de saída .txt
-        //É possível alterar o endereço e manter os arquivos alterando o endereço prefixo_local utilizado no construtor da classe Arquivos
-        //arquivos.limpaArquivos();
+        arquivos.registraSaidaHoldout(rede_h, n_ocultos, t_aprendizado, momentum, acuracia, testaRede(rede_h, Holdout.conjTeste), rede_h.erros_quadraticos_teste, rede_h.erros_quadraticos_valid, rede_h.erros_quadraticos_treino, n_epocas);
 
-         //TODO: Desenvolver uma funçao de registro de saida individual para o K-FOLD
-        arquivos.registraMatrizConfusao(n_ocultos, t_aprendizado, momentum, testaRede(rede, Holdout.conjTeste),acuracia);
-        //arquivos.registraSaidaKFOLD(rede, n_ocultos, t_aprendizado, momentum, acuracia, testaRede(rede, Holdout.conjTeste), rede.erros_quadraticos_teste, rede.erros_quadraticos_valid, rede.erros_quadraticos_treino, n_epocas - 1);
+        MLP rede_k = new MLP(n_ocultos, t_aprendizado, momentum);
+        treinaRede(rede_k, acuracia, 2);//Abordagem 1 = Holdout
+
+        arquivos.registraSaidaKFOLD(rede_k, n_ocultos, t_aprendizado, momentum, acuracia);
     }
 }
