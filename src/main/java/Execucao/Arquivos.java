@@ -7,6 +7,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.List;
 
 public class Arquivos {
 
@@ -154,13 +155,23 @@ public class Arquivos {
         writer.close();
     }
 
-    public void registraMatrizConfusao(int neuronios, double taxaAprendizado, double momentum, int[][] matriz_confusao, double acuracia) throws IOException {
+    public void registraMatrizConfusao(int neuronios, double taxaAprendizado, double momentum, int[][] matriz_confusao, double acuracia, List<Integer> erros, int y) throws IOException {
 
         BufferedWriter writer = new BufferedWriter(new FileWriter(prefixo_local + "_matriz.csv", true));
 
-        writer.append("N_NEURONIOS, TAXA_APRENDIZADO, MOMENTUM, ACURACIA\n");
-        writer.append(String.valueOf(neuronios)).append(", ").append(String.valueOf(taxaAprendizado)).append(", ").append(String.valueOf(momentum)).append(", ").append(String.valueOf(acuracia));
+        int numeroErros = 0;
+        for (int i = 0; i < 10; i++) {
+            for (int j = 0; j < 10; j++) {
+                if(i != j && matriz_confusao[i][j] != 0) numeroErros += matriz_confusao[i][j];
+            }
+        }
+        erros.add(numeroErros);
+
+        writer.append("N_NEURONIOS, TAXA_APRENDIZADO, MOMENTUM, ACURACIA, ERROS\n");
+        writer.append(String.valueOf(neuronios)).append(", ").append(String.valueOf(taxaAprendizado)).append(", ").append(String.valueOf(momentum)).append(", ").append(String.valueOf(acuracia)).append(", ");
+        writer.append(String.valueOf(numeroErros));
         writer.append("\n\n");
+
 
         //Escrita no arquivo (Matriz pronta em formato CSV)
         for (int i = 0; i < 10; i++) {
@@ -186,6 +197,18 @@ public class Arquivos {
             writer.append("\n");
         }
         writer.append("\n");
+
+        int media = 0;
+        for (int erro:erros) {
+            media += erro;
+        }
+        media = media/y;
+        if(erros.size() == y){
+            writer.append("\nMédia: ").append(String.valueOf(media));
+            System.out.println("Média: "+media);
+        }
+        writer.append("\n");
+
         writer.close();
     }
 }

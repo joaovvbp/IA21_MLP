@@ -1,0 +1,24 @@
+
+\
+java:S1118":Add a private constructor to hide the implicit public one.(Êúßúÿÿÿÿ8ö÷—Î/
+h
+java:S3776"RRefactor this method to reduce its Cognitive Complexity from 17 to the 15 allowed.(°™ôã
+q
+java:S1104	"[Make conjTreinamento a static final constant or non-public and provide accessors if needed.(‡½üæ
+t
+java:S1104
+"YMake conjValidacao a static final constant or non-public and provide accessors if needed.(ö«Ãˆúÿÿÿÿ
+k
+java:S1104"UMake conjTeste a static final constant or non-public and provide accessors if needed.(ü§à“
+t
+java:S1104"RMake random a static final constant or non-public and provide accessors if needed.(×‘éµùÿÿÿÿ8¡ø—Î/
+K
+java:S1444	"5Make this "public static conjTreinamento" field final(‡½üæ
+N
+java:S1444
+"3Make this "public static conjValidacao" field final(ö«Ãˆúÿÿÿÿ
+E
+java:S1444"/Make this "public static conjTeste" field final(ü§à“
+N
+java:S1444",Make this "public static random" field final(×‘éµùÿÿÿÿ8¢ø—Î/
+o	java:S120"ZRename this package name to match the regular expression '^[a-z_]+(\.[a-z_][a-z0-9_]*)*$'.(¤†³Ö

@@ -7,6 +7,8 @@ import Dados.KFold;
 import Dados.ProcessaDados;
 
 import java.io.IOException;
+import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 
 //Apenas o erro quadratico e calculado dentro da MLP
@@ -106,26 +108,35 @@ public class Main {
         //TODO: Gravar a rede em um arquivo após convergir
         //TODO: Implementar a etapa de testes e verificação
         String prefixo_local = "src/main/resources/teste_fixo";
-
+        List<Integer> erros = new LinkedList<>();
         preparaDados("src/main/resources/optdigits.dat");
+        int it = 50;
+        for (int i = 1; i <= it; i++) {
+           // for (double j = 0.01; j <= 0.1; j+=0.01) {
+               // for (double k = 0.5; k <0.9; k+=0.1) {
+                    int n_ocultos = 30;
+                    double t_aprendizado = 0.05;
+                    double momentum = 0.5;
+                    double acuracia = 0.95;
+                    int abordagem = 1;
+                    Arquivos arquivos = new Arquivos(prefixo_local);
+                    MLP rede = new MLP(n_ocultos, t_aprendizado, momentum);
+                    int n_epocas = treinaRede(rede, acuracia, abordagem);
+                    arquivos.registraMatrizConfusao(n_ocultos, t_aprendizado, momentum, testaRede(rede, Holdout.conjTeste), acuracia, erros, it);
+               // }
+           // }
+        }
+        Collections.sort(erros);
+        for (int i : erros) System.out.println(i);
 
-        int n_ocultos = 10;
-        double t_aprendizado = 1.0;
-        double momentum = 0.9;
-        double acuracia = 0.95;
-        int abordagem = 1;
 
-        Arquivos arquivos = new Arquivos(prefixo_local);
-        MLP rede = new MLP(n_ocultos, t_aprendizado, momentum);
 
-        int n_epocas = treinaRede(rede, acuracia, abordagem);
 
         //Registra os dados em arquivos CSV e um único arquivo de saída .txt
         //É possível alterar o endereço e manter os arquivos alterando o endereço prefixo_local utilizado no construtor da classe Arquivos
         //arquivos.limpaArquivos();
 
          //TODO: Desenvolver uma funçao de registro de saida individual para o K-FOLD
-        arquivos.registraMatrizConfusao(n_ocultos, t_aprendizado, momentum, testaRede(rede, Holdout.conjTeste),acuracia);
         //arquivos.registraSaidaKFOLD(rede, n_ocultos, t_aprendizado, momentum, acuracia, testaRede(rede, Holdout.conjTeste), rede.erros_quadraticos_teste, rede.erros_quadraticos_valid, rede.erros_quadraticos_treino, n_epocas - 1);
     }
 }

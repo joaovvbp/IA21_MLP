@@ -1,0 +1,25 @@
+
+g	java:S116
+"MRename this field "ID" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(ÑÙÍ‹úÿÿÿÿ
+n	java:S116"YRename this field "soma_ponderada" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.( §óý
+k	java:S116"VRename this field "ultimo_erro" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(¢ÉÎÒ
+m	java:S116"XRename this field "ultimo_ajuste" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(Öµÿå
+M
+java:S1135	"2Complete the task associated to this TODO comment.(›¢¶·ýÿÿÿÿ
+k	java:S117"QRename this local variable to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(öåÅ×ùÿÿÿÿ
+i
+java:S1104
+"NMake ID a static final constant or non-public and provide accessors if needed.(ÑÙÍ‹úÿÿÿÿ
+f
+java:S1104"QMake saida a static final constant or non-public and provide accessors if needed.(±Ð²c
+p
+java:S1104"ZMake soma_ponderada a static final constant or non-public and provide accessors if needed.( §óý
+g
+java:S1104"QMake pesos a static final constant or non-public and provide accessors if needed.(ñÈÃä
+m
+java:S1104"WMake ultimo_erro a static final constant or non-public and provide accessors if needed.(¢ÉÎÒ
+o
+java:S1104"YMake ultimo_ajuste a static final constant or non-public and provide accessors if needed.(Öµÿå
+o	java:S120"ZRename this package name to match the regular expression '^[a-z_]+(\.[a-z_][a-z0-9_]*)*$'.(«Öý 
+Z
+java:S3518("?Make sure "somapesos" can't be zero before doing this division.(æ‹çÕþÿÿÿÿ
