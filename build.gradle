@@ -3,7 +3,7 @@ plugins {
     id 'application'
 }
 
-mainClassName = 'Execucao.Main'
+mainClassName = 'execucao.Main'
 
 group 'org.example'
 version '1.0-SNAPSHOT'
