@@ -30,10 +30,11 @@ public class MLP {
     public double erroFinalValid = 0;
     public double erroFinalTreino = 0;
 
-    public ArrayList<double[]> errosQuadraticosTeste = new ArrayList<>();//Usado para armazenar as epocas
-    public ArrayList<double[]> errosQuadraticosValid = new ArrayList<>();//Usado para armazenar as epocas
-    public ArrayList<double[]> errosQuadraticosTreino = new ArrayList<>();//Usado para armazenar as epocas
+    public ArrayList<double[]> errosQuadraticosTeste = new ArrayList<>();
+    public ArrayList<double[]> errosQuadraticosValid = new ArrayList<>();
+    public ArrayList<double[]> errosQuadraticosTreino = new ArrayList<>();
     public ArrayList<double[]> errosVerdadeirosFolds = new ArrayList<>();
+    public ArrayList<Double> errosMedioFolds = new ArrayList<>();
 
     //Sao inicializadas as camadas, chamando os construtores dos neuronios, onde sao inicializados os pesos
     public MLP(int neuroniosCamadaOculta, double taxaDeAprendizado, double momentum) {

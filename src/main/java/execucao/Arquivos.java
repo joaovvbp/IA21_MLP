@@ -11,117 +11,125 @@ import java.util.ArrayList;
 
 public class Arquivos {
 
-    String prefixoLocal;
+    String local;
 
     public Arquivos(String prefixoLocal) {
-        this.prefixoLocal = prefixoLocal;
+        this.local = prefixoLocal;
     }
 
-    public void limpaArquivos() throws IOException {
-        PrintWriter writerKfold = new PrintWriter(prefixoLocal + "_saida_kfold.txt");
-        writerKfold.print("");
-        writerKfold.close();
+    public void registraSaidaHoldout(MLP redek, MLP rede, int numeroNeuronios, double taxaAprendizado, double momentum, double acuracia, int[][] matrizConfusao, ArrayList<double[]> errosQuadraticosTeste, ArrayList<double[]> errosQuadraticosValid, ArrayList<double[]> errosQuadraticosTreino, int numeroEpocas) throws IOException {
+        BufferedWriter writerSaida = new BufferedWriter(new FileWriter(local));
 
-        PrintWriter writerHoldout= new PrintWriter(prefixoLocal + "_saida_holdout.txt");
-        writerHoldout.print("");
-        writerHoldout.close();
-    }
+        writerSaida.append("########################################################### ABORDAGEM K-FOLD ###########################################################");
+        writerSaida.append("\n\n");
 
-    public void registraSaidaKFOLD(MLP rede, int numeroNeuronios, double taxaAprendizado, double momentum, double acuracia) throws IOException {
-        BufferedWriter writerSaida = new BufferedWriter(new FileWriter(prefixoLocal + "_saida_kfold.txt"));
-        try (writerSaida) {
-            for (int i = 0; i < rede.errosVerdadeirosFolds.size(); i++) {
-                double[] erroVerdadeiro = rede.errosVerdadeirosFolds.get(i);
-                writerSaida.append("ERRO VERDADEIRO FOLD ").append(String.valueOf(i + 1)).append("\n");
-                writerSaida.append(String.valueOf(erroVerdadeiro[0])).append(" > e > ").append(String.valueOf(erroVerdadeiro[1]));
-                writerSaida.append("\n\n");
-            }
-
-            double[] erroGeral = Main.calculaMediaKFolds(rede);
-            writerSaida.append("ERRO CROSS-VALIDATION\n");
-            writerSaida.append(String.valueOf(erroGeral[0])).append(" > e > ").append(String.valueOf(erroGeral[1]));
+        for (int i = 0; i < redek.errosVerdadeirosFolds.size(); i++) {
+            double[] erroVerdadeiro = redek.errosVerdadeirosFolds.get(i);
+            double erroMedio = redek.errosMedioFolds.get(i);
+            writerSaida.append("ERRO VERDADEIRO FOLD ").append(String.valueOf(i + 1)).append("\n");
+            writerSaida.append(String.valueOf(erroVerdadeiro[0])).append(" > e > ").append(String.valueOf(erroVerdadeiro[1]));
             writerSaida.append("\n");
+            writerSaida.append("ERRO MEDIO FOLD ").append(String.valueOf(i + 1)).append("\n");
+            writerSaida.append(String.valueOf(erroMedio));
+            writerSaida.append("\n\n");
+        }
 
-            writerSaida.append("\n");
-            writerSaida.append("NUMERO DE NEURONIOS, TAXA DE APRENDIZADO, MOMENTUM, ACURACIA\n");
-            writerSaida.append(String.valueOf(numeroNeuronios)).append(", ").append(String.valueOf(taxaAprendizado)).append(", ").append(String.valueOf(momentum)).append(", ").append(String.valueOf(acuracia));
-            writerSaida.append("\n");
 
+        double[] erroGeral = Main.calculaMediaKFolds(redek);
+        writerSaida.append("ERRO CROSS-VALIDATION\n");
+        writerSaida.append(String.valueOf(erroGeral[0])).append(" > e > ").append(String.valueOf(erroGeral[1]));
+        writerSaida.append("\n");
+
+        writerSaida.append("\n");
+        writerSaida.append("NUMERO DE NEURONIOS, TAXA DE APRENDIZADO, MOMENTUM, ACURACIA\n");
+        writerSaida.append(String.valueOf(numeroNeuronios)).append(", ").append(String.valueOf(taxaAprendizado)).append(", ").append(String.valueOf(momentum)).append(", ").append(String.valueOf(acuracia));
+        writerSaida.append("\n");
+
+        writerSaida.append("\n");
+
+        writerSaida.append("########################################################### ABORDAGEM HOLDOUT ###########################################################");
+        writerSaida.append("\n\n");
+
+        double[] erroVerdadeiroTeste = Main.calculaErroVerdairo(rede, Holdout.conjTeste);
+        double[] erroVerdadeiroValid = Main.calculaErroVerdairo(rede, Holdout.conjValidacao);
+        double[] erroVerdadeiroTreino = Main.calculaErroVerdairo(rede, Holdout.conjTreinamento);
+
+        writerSaida.append("NUMERO DE EPOCAS\n");
+        writerSaida.append(String.valueOf(numeroEpocas));
+        writerSaida.append("\n\n");
+
+        writerSaida.append("ERRO VERDADEIRO CONJUNTO TESTES\n");
+        writerSaida.append(String.valueOf(erroVerdadeiroTeste[0])).append(" > e > ").append(String.valueOf(erroVerdadeiroTeste[1]));
+        writerSaida.append("\n\n");
+
+        writerSaida.append("ERRO VERDADEIRO CONJUNTO VALIDACAO\n");
+        writerSaida.append(String.valueOf(erroVerdadeiroValid[0])).append(" > e > ").append(String.valueOf(erroVerdadeiroValid[1]));
+        writerSaida.append("\n\n");
+
+        writerSaida.append("ERRO VERDADEIRO CONJUNTO TREINO\n");
+        writerSaida.append(String.valueOf(erroVerdadeiroTreino[0])).append(" > e > ").append(String.valueOf(erroVerdadeiroTreino[1]));
+        writerSaida.append("\n\n");
+
+        writerSaida.append("NUMERO DE NEURONIOS, TAXA DE APRENDIZADO, MOMENTUM, ACURACIA\n");
+        writerSaida.append(String.valueOf(numeroNeuronios)).append(", ").append(String.valueOf(taxaAprendizado)).append(", ").append(String.valueOf(momentum)).append(", ").append(String.valueOf(acuracia));
+        writerSaida.append("\n");
+
+        writerSaida.append("\n");
+
+        writerSaida.append("EPOCAS, ERRO QUADRATICO CONJ TESTE\n");
+        for (double[] errosQuadratico : errosQuadraticosTeste) {
+            writerSaida.append(String.valueOf(errosQuadratico[0])).append(", ").append(String.valueOf(errosQuadratico[1]));
             writerSaida.append("\n");
         }
-    }
 
-    public void registraSaidaHoldout(MLP rede, int numeroNeuronios, double taxaAprendizado, double momentum, double acuracia, int[][] matrizConfusao, ArrayList<double[]> errosQuadraticosTeste, ArrayList<double[]> errosQuadraticosValid, ArrayList<double[]> errosQuadraticosTreino, int numeroEpocas) throws IOException {
-        BufferedWriter writerSaida = new BufferedWriter(new FileWriter(prefixoLocal + "_saida_holdout.txt"));
-        try(writerSaida) {
-            double[] erroVerdadeiro = Main.calculaErroVerdairo(rede, Holdout.conjTeste);
+        writerSaida.append("\n");
 
-            writerSaida.append("NUMERO DE EPOCAS, ERRO VERDADEIRO\n");
-            writerSaida.append(String.valueOf(numeroEpocas)).append(", ").append(String.valueOf(erroVerdadeiro[0])).append("> e >").append(String.valueOf(erroVerdadeiro[1]));
+        writerSaida.append("EPOCAS, ERRO QUADRATICO CONJ VALIDACAO\n");
+        for (double[] errosQuadratico : errosQuadraticosValid) {
+            writerSaida.append(String.valueOf(errosQuadratico[0])).append(", ").append(String.valueOf(errosQuadratico[1]));
             writerSaida.append("\n");
+        }
 
+        writerSaida.append("\n");
+
+        writerSaida.append("EPOCAS, ERRO QUADRATICO CONJ TREINO\n");
+        for (double[] errosQuadratico : errosQuadraticosTreino) {
+            writerSaida.append(String.valueOf(errosQuadratico[0])).append(", ").append(String.valueOf(errosQuadratico[1]));
             writerSaida.append("\n");
+        }
 
-            writerSaida.append("NUMERO DE NEURONIOS, TAXA DE APRENDIZADO, MOMENTUM, ACURACIA\n");
-            writerSaida.append(String.valueOf(numeroNeuronios)).append(", ").append(String.valueOf(taxaAprendizado)).append(", ").append(String.valueOf(momentum)).append(", ").append(String.valueOf(acuracia));
-            writerSaida.append("\n");
+        writerSaida.append("\n");
 
-            writerSaida.append("\n");
-
-            writerSaida.append("EPOCAS, ERRO QUADRATICO CONJ TESTE\n");
-            for (double[] errosQuadratico : errosQuadraticosTeste) {
-                writerSaida.append(String.valueOf(errosQuadratico[0])).append(", ").append(String.valueOf(errosQuadratico[1]));
-                writerSaida.append("\n");
-            }
-
-            writerSaida.append("\n");
-
-            writerSaida.append("EPOCAS, ERRO QUADRATICO CONJ VALIDACAO\n");
-            for (double[] errosQuadratico : errosQuadraticosValid) {
-                writerSaida.append(String.valueOf(errosQuadratico[0])).append(", ").append(String.valueOf(errosQuadratico[1]));
-                writerSaida.append("\n");
-            }
-
-            writerSaida.append("\n");
-
-            writerSaida.append("EPOCAS, ERRO QUADRATICO CONJ TREINO\n");
-            for (double[] errosQuadratico : errosQuadraticosTreino) {
-                writerSaida.append(String.valueOf(errosQuadratico[0])).append(", ").append(String.valueOf(errosQuadratico[1]));
-                writerSaida.append("\n");
-            }
-
-            writerSaida.append("\n");
-
-            writerSaida.append("MATRIZ DE CONFUSAO\n");
-            for (int i = 0; i < 10; i++) {
-                if (i == 0) {
-                    writerSaida.append(String.valueOf(acuracia)).append(", ");
-                    for (int j = 0; j < 10; j++) {
-                        if (j == 9) {
-                            writerSaida.append(String.valueOf(j));
-                        } else {
-                            writerSaida.append(String.valueOf(j)).append(", ");
-                        }
-                    }
-                    writerSaida.append("\n");
-                }
-                writerSaida.append(String.valueOf(i)).append(", ");
+        writerSaida.append("MATRIZ DE CONFUSAO\n");
+        for (int i = 0; i < 10; i++) {
+            if (i == 0) {
+                writerSaida.append(String.valueOf(acuracia)).append(", ");
                 for (int j = 0; j < 10; j++) {
                     if (j == 9) {
-                        writerSaida.append(String.valueOf(matrizConfusao[i][j]));
+                        writerSaida.append(String.valueOf(j));
                     } else {
-                        writerSaida.append(String.valueOf(matrizConfusao[i][j])).append(", ");
+                        writerSaida.append(String.valueOf(j)).append(", ");
                     }
                 }
                 writerSaida.append("\n");
             }
+            writerSaida.append(String.valueOf(i)).append(", ");
+            for (int j = 0; j < 10; j++) {
+                if (j == 9) {
+                    writerSaida.append(String.valueOf(matrizConfusao[i][j]));
+                } else {
+                    writerSaida.append(String.valueOf(matrizConfusao[i][j])).append(", ");
+                }
+            }
             writerSaida.append("\n");
         }
+        writerSaida.append("\n");
+        writerSaida.close();
     }
 
 
     public void registraRede(MLP rede) throws IOException {
-        BufferedWriter writerOculto = new BufferedWriter(new FileWriter(prefixoLocal + "_pesos_oculto.csv"));
+        BufferedWriter writerOculto = new BufferedWriter(new FileWriter(local + "_pesos_oculto.csv"));
         try (writerOculto) {
             writerOculto.append("NEURONIO OCULTO, PESO\n");
             for (int i = 0; i < rede.camadaOculta.tamanhoCamada; i++) {
@@ -131,7 +139,7 @@ public class Arquivos {
                 }
             }
         }
-        BufferedWriter writerSaida = new BufferedWriter(new FileWriter(prefixoLocal + "_pesos_saida.csv", true));
+        BufferedWriter writerSaida = new BufferedWriter(new FileWriter(local + "_pesos_saida.csv", true));
         try (writerSaida) {
             writerSaida.append("NEURONIO SAIDA, PESO\n");
             for (int i = 0; i < rede.camadaSaida.tamanhoCamada; i++) {
@@ -140,64 +148,6 @@ public class Arquivos {
                     writerSaida.append(String.valueOf(rede.camadaSaida.neuronios[i].pesos[j])).append("\n");
                 }
             }
-        }
-    }
-
-    public void registraErroQuadratico(ArrayList<double[]> errosQuadraticos, int conjunto) throws IOException {
-        String posfixo = null;
-        switch (conjunto) {
-            case (1):
-                posfixo = "_epocas_teste.csv";
-                break;
-            case (2):
-                posfixo = "_epocas_valid.csv";
-                break;
-            case (3):
-                posfixo = "_epocas_treino.csv";
-                break;
-        }
-        BufferedWriter writer = new BufferedWriter(new FileWriter(prefixoLocal + posfixo, true));
-        try (writer) {
-            writer.append(" EPOCAS, ERRO QUADRATICO\n");
-            for (double[] errosQuadratico : errosQuadraticos) {
-                writer.append(" ").append(String.valueOf(errosQuadratico[0])).append(", ").append(String.valueOf(errosQuadratico[1]));
-                writer.append("\n");
-            }
-        }
-    }
-
-    public void registraMatrizConfusao(int neuronios, double taxaAprendizado, double momentum, int[][] matrizConfusao, double acuracia) throws IOException {
-
-        BufferedWriter writer = new BufferedWriter(new FileWriter(prefixoLocal + "_matriz.csv", true));
-        try (writer) {
-            writer.append("NUMERO DE NEURONIOS, TAXA DE APRENDIZADO, MOMENTUM, ACURACIA\n");
-            writer.append(String.valueOf(neuronios)).append(", ").append(String.valueOf(taxaAprendizado)).append(", ").append(String.valueOf(momentum)).append(", ").append(String.valueOf(acuracia));
-            writer.append("\n\n");
-
-            //Escrita no arquivo (Matriz pronta em formato CSV)
-            for (int i = 0; i < 10; i++) {
-                if (i == 0) {
-                    writer.append(String.valueOf(acuracia)).append(", ");
-                    for (int j = 0; j < 10; j++) {
-                        if (j == 9) {
-                            writer.append(String.valueOf(j));
-                        } else {
-                            writer.append(String.valueOf(j)).append(", ");
-                        }
-                    }
-                    writer.append("\n");
-                }
-                writer.append(String.valueOf(i)).append(", ");
-                for (int j = 0; j < 10; j++) {
-                    if (j == 9) {
-                        writer.append(String.valueOf(matrizConfusao[i][j]));
-                    } else {
-                        writer.append(String.valueOf(matrizConfusao[i][j])).append(", ");
-                    }
-                }
-                writer.append("\n");
-            }
-            writer.append("\n");
         }
     }
 }
