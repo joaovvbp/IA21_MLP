@@ -12,6 +12,10 @@ repositories {
     mavenCentral()
 }
 
+run {
+    standardInput = System.in
+}
+
 test {
     useJUnitPlatform()
 }
