@@ -8,7 +8,7 @@ Os dados a serem processados pertencem à base de dados da UCI (University of Ca
 
 Optamos por utilizar Gradle para a execução facilitada do nosso algoritmo.
 
-Basta acessar a pasta /IA21_MLP e utilizar o comando ./gradlew run.
+Basta acessar a pasta /IA21_MLP e utilizar o comando ```./gradlew run.```
 
 Será oferecida a opção de utilizar os arquivos que definimos como padrão dentro de nossa implementação (Y), por padrão, os arquivos serão inseridos na pasta /IA21_MLP/src/main/resources/, caso opte por definir outros arquivos a serem utilizados (N), basta digitar os endereços dos arquivos que deseja utilizar como entrada e saída.
 
